@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Student Service Portal</h1>
+        <p>A simple portal to submit student requests.</p>
+    </header>
+
+    <nav>
+        <a href="#">Home</a> |
+        <a href="#">Services</a> |
+        <a href="#">Contact</a>
+    </nav>
+
+    <main>
+        <h2>Available Services</h2>
+        <p>You can request for transcripts, ID card reissues, and general inquiries. Please use the form below.</p>
+
+        <hr>
+
+        <h2>Service Request Form</h2>
+        <form>
+            <p>Student Name: </p>
+            <input type="text" required>
+
+            <p>Student ID: </p>
+            <input type="text" maxlength="10" required>
+
+            <p>Email: </p>
+            <input type="email" required>
+
+            <p>Service Type: </p>
+            <select>
+                <option>Transcript Request</option>
+                <option>ID Card Issue</option>
+                <option>General Inquiry</option>
+            </select>
+
+            <p>Urgency Level: </p>
+            <input type="radio" name="urgency" value="low" checked> Low
+            <input type="radio" name="urgency" value="medium"> Medium
+            <input type="radio" name="urgency" value="high"> High
+
+            <p>Additional Details: </p>
+            <textarea rows="4" cols="30"></textarea>
+
+            <p>
+                <input type="submit" value="Submit Request">
+            </p>
+        </form>
+    </main>
+
+    <footer>
+        <p>© 2026 University Student Affairs Department.
+    </footer>
+
+</body>
+
+</html>
