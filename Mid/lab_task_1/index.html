@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Portfolio & Contact</title>
+</head>
+<body>
+
+    <h1 id="greeting"></h1>
+    <h2 id="liveClock"></h2>
+
+    <button id="themeBtn" onclick="toggleTheme()">Click to switch to Dark Mode</button>
+
+    <div class="form-container">
+        <form id="myForm">
+            <input type="text" id="name" placeholder="Name">
+            <p id="nameError" class="error"></p>
+
+            <input type="email" id="email" placeholder="Email">
+            <p id="emailError" class="error"></p>
+
+            <input type="text" id="phone" placeholder="Phone (10 digits)">
+            <p id="phoneError" class="error"></p>
+
+            <input type="number" id="age" placeholder="Age">
+            <p id="ageError" class="error"></p>
+
+            <input type="password" id="password" placeholder="Password">
+            <p id="passwordError" class="error"></p>
+
+            <input type="password" id="confirmPassword" placeholder="Confirm Password">
+            <p id="confirmError" class="error"></p>
+
+            <textarea id="message" placeholder="Message"></textarea>
+            <p id="messageError" class="error"></p>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="successMessage"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
