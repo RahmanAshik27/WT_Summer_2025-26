@@ -17,9 +17,9 @@ $customer_id = $_SESSION["user_id"];
 $customer_name = $_SESSION["full_name"] ?? "Customer";
 
 
-// ==========================================
+
 // CUSTOMER INFO
-// ==========================================
+
 
 $user_sql = "
     SELECT
@@ -52,9 +52,9 @@ $customer =
 mysqli_stmt_close($user_stmt);
 
 
-// ==========================================
+
 // FETCH CART ITEMS
-// ==========================================
+
 
 $cart_sql = "
 
@@ -130,9 +130,9 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
 mysqli_stmt_close($cart_stmt);
 
 
-// ==========================================
+
 // EMPTY CART PROTECTION
-// ==========================================
+
 
 if (empty($cart_items)) {
 
@@ -144,6 +144,377 @@ if (empty($cart_items)) {
 // For now
 $discount = 0;
 $grand_total = $subtotal - $discount;
+
+$order_error = "";
+
+if (
+    $_SERVER["REQUEST_METHOD"] === "POST" &&
+    isset($_POST["confirm_order"])
+) {
+
+    $delivery_method =
+        $_POST["delivery_method"] ?? "";
+
+    $payment_method =
+        $_POST["payment_method"] ?? "";
+
+
+    
+    // ALLOWED DELIVERY METHODS
+    
+
+    $allowed_delivery_methods = [
+        "Pathao Fast",
+        "PetPanda Go",
+        "Speed Fast",
+        "Jhinku BD",
+        "Shop Pickup"
+    ];
+
+
+    
+    // ALLOWED PAYMENT METHODS
+    
+
+    $allowed_payment_methods = [
+        "bKash",
+        "Nagad",
+        "Rocket",
+        "Credit Card",
+        "Cash on Delivery"
+    ];
+
+
+
+    // VALIDATION
+
+
+    if (
+        !in_array(
+            $delivery_method,
+            $allowed_delivery_methods,
+            true
+        )
+    ) {
+
+        $order_error =
+            "Please select a valid delivery method.";
+
+    }
+
+    elseif (
+        !in_array(
+            $payment_method,
+            $allowed_payment_methods,
+            true
+        )
+    ) {
+
+        $order_error =
+            "Please select a valid payment method.";
+
+    }
+
+    else {
+
+        mysqli_begin_transaction($conn);
+
+        try {
+
+
+            // CHECK STOCK AGAIN
+
+
+            foreach ($cart_items as $item) {
+
+                if ($item["item_type"] === "pet") {
+
+                    $stock_sql = "
+                        SELECT stock
+                        FROM pets
+                        WHERE pet_id = ?
+                        FOR UPDATE
+                    ";
+
+                } else {
+
+                    $stock_sql = "
+                        SELECT stock
+                        FROM products
+                        WHERE product_id = ?
+                        FOR UPDATE
+                    ";
+                }
+
+
+                $stock_stmt =
+                    mysqli_prepare(
+                        $conn,
+                        $stock_sql
+                    );
+
+                mysqli_stmt_bind_param(
+                    $stock_stmt,
+                    "i",
+                    $item["item_id"]
+                );
+
+                mysqli_stmt_execute(
+                    $stock_stmt
+                );
+
+                $stock_result =
+                    mysqli_stmt_get_result(
+                        $stock_stmt
+                    );
+
+                $stock_row =
+                    mysqli_fetch_assoc(
+                        $stock_result
+                    );
+
+                mysqli_stmt_close(
+                    $stock_stmt
+                );
+
+
+                if (
+                    !$stock_row ||
+                    (int) $stock_row["stock"] <
+                    (int) $item["quantity"]
+                ) {
+
+                    throw new Exception(
+                        "One or more items do not have enough stock."
+                    );
+                }
+            }
+
+
+
+            // CREATE ORDER
+
+
+            $order_sql = "
+                INSERT INTO orders
+                (
+                    customer_id,
+                    total_amount,
+                    delivery_address,
+                    delivery_method,
+                    payment_method,
+                    payment_status,
+                    order_status
+                )
+                VALUES
+                (
+                    ?, ?, ?, ?, ?,
+                    'Pending',
+                    'Pending'
+                )
+            ";
+
+
+            $order_stmt =
+                mysqli_prepare(
+                    $conn,
+                    $order_sql
+                );
+
+
+            $delivery_address =
+                $customer["address"] ?? "";
+
+
+            mysqli_stmt_bind_param(
+                $order_stmt,
+                "idsss",
+                $customer_id,
+                $grand_total,
+                $delivery_address,
+                $delivery_method,
+                $payment_method
+            );
+
+
+            mysqli_stmt_execute(
+                $order_stmt
+            );
+
+
+            $order_id =
+                mysqli_insert_id($conn);
+
+
+            mysqli_stmt_close(
+                $order_stmt
+            );
+
+
+
+            // CREATE ORDER ITEMS
+
+
+            foreach ($cart_items as $item) {
+
+                $order_item_sql = "
+                    INSERT INTO order_items
+                    (
+                        order_id,
+                        item_type,
+                        item_id,
+                        item_name,
+                        price,
+                        quantity,
+                        subtotal
+                    )
+                    VALUES
+                    (
+                        ?, ?, ?, ?, ?, ?, ?
+                    )
+                ";
+
+
+                $order_item_stmt =
+                    mysqli_prepare(
+                        $conn,
+                        $order_item_sql
+                    );
+
+
+                mysqli_stmt_bind_param(
+                    $order_item_stmt,
+                    "isisdid",
+                    $order_id,
+                    $item["item_type"],
+                    $item["item_id"],
+                    $item["item_name"],
+                    $item["item_price"],
+                    $item["quantity"],
+                    $item["subtotal"]
+                );
+
+
+                mysqli_stmt_execute(
+                    $order_item_stmt
+                );
+
+
+                mysqli_stmt_close(
+                    $order_item_stmt
+                );
+
+
+
+                // REDUCE STOCK
+
+
+                if ($item["item_type"] === "pet") {
+
+                    $update_stock_sql = "
+                        UPDATE pets
+                        SET stock = stock - ?
+                        WHERE pet_id = ?
+                    ";
+
+                } else {
+
+                    $update_stock_sql = "
+                        UPDATE products
+                        SET stock = stock - ?
+                        WHERE product_id = ?
+                    ";
+                }
+
+
+                $stock_update_stmt =
+                    mysqli_prepare(
+                        $conn,
+                        $update_stock_sql
+                    );
+
+
+                mysqli_stmt_bind_param(
+                    $stock_update_stmt,
+                    "ii",
+                    $item["quantity"],
+                    $item["item_id"]
+                );
+
+
+                mysqli_stmt_execute(
+                    $stock_update_stmt
+                );
+
+
+                mysqli_stmt_close(
+                    $stock_update_stmt
+                );
+            }
+
+
+
+            // CLEAR CUSTOMER CART
+
+
+            $clear_cart_sql = "
+                DELETE FROM carts
+                WHERE customer_id = ?
+            ";
+
+
+            $clear_cart_stmt =
+                mysqli_prepare(
+                    $conn,
+                    $clear_cart_sql
+                );
+
+
+            mysqli_stmt_bind_param(
+                $clear_cart_stmt,
+                "i",
+                $customer_id
+            );
+
+
+            mysqli_stmt_execute(
+                $clear_cart_stmt
+            );
+
+
+            mysqli_stmt_close(
+                $clear_cart_stmt
+            );
+
+
+
+            // EVERYTHING SUCCESSFUL
+
+
+            mysqli_commit($conn);
+
+
+            header(
+                "Location: order_success.php?order_id=" .
+                $order_id
+            );
+
+            exit;
+
+
+        } catch (Throwable $e) {
+
+
+
+            mysqli_rollback($conn);
+
+
+            $order_error =
+                "Order could not be completed. " .
+                $e->getMessage();
+        }
+    }
+}
 
 ?>
 
@@ -166,12 +537,24 @@ $grand_total = $subtotal - $discount;
 
 <body>
 
+<?php if (!empty($order_error)): ?>
+
+    <div class="checkout-error-toast">
+
+        <?php echo htmlspecialchars(
+            $order_error
+        ); ?>
+
+    </div>
+
+<?php endif; ?>
+
 <div class="checkout-page">
 
 
-    <!-- =========================
-         HEADER
-    ========================== -->
+    
+         <!-- HEADER -->
+    
 
     <header class="checkout-header">
 
@@ -226,16 +609,24 @@ $grand_total = $subtotal - $discount;
     </header>
 
 
-    <!-- =========================
-         MAIN CONTENT
-    ========================== -->
 
-    <main class="checkout-content">
+         <!-- MAIN CONTENT -->
+
+         <form method="POST" id="checkoutForm">
+
+         <input
+            type="hidden"
+            name="payment_method"
+            id="selectedPaymentMethod"
+            value="Cash on Delivery"
+        >
+
+        <main class="checkout-content">
 
 
-        <!-- =====================
-             ORDER SUMMARY
-        ====================== -->
+    
+             <!-- ORDER SUMMARY -->
+    
 
         <section class="checkout-panel order-summary receipt-panel">
 
@@ -387,9 +778,9 @@ $grand_total = $subtotal - $discount;
 
 
 
-        <!-- =====================
-             DELIVERY METHOD
-        ====================== -->
+    
+             <!-- DELIVERY METHOD -->
+    
 
         <section class="checkout-panel">
 
@@ -405,6 +796,7 @@ $grand_total = $subtotal - $discount;
                     <input
                         type="radio"
                         name="delivery_method"
+                        id="selectedPaymentMethod"
                         value="Pathao Fast"
                         checked>
 
@@ -490,9 +882,9 @@ $grand_total = $subtotal - $discount;
 
 
 
-        <!-- =====================
-             PAYMENT
-        ====================== -->
+
+             <!-- PAYMENT -->
+
 
         <section class="checkout-panel">
 
@@ -507,9 +899,7 @@ $grand_total = $subtotal - $discount;
                     type="button"
                     class="payment-btn"
                     data-payment="bKash">
-
                     Pay with bKash
-
                 </button>
 
 
@@ -559,10 +949,9 @@ $grand_total = $subtotal - $discount;
     </main>
 
 
-
-    <!-- =========================
-         FOOTER
-    ========================== -->
+    
+         <!-- FOOTER -->
+    
 
     <footer class="checkout-footer">
 
@@ -573,15 +962,16 @@ $grand_total = $subtotal - $discount;
 
 
         <button
-            type="button"
+            type="submit"
+            name="confirm_order"
             class="confirm-order-btn"
             id="confirmOrderBtn">
-
             CONFIRM ORDER
-
         </button>
 
     </footer>
+</form>
+
 
 </div>
 

@@ -82,46 +82,36 @@ document.addEventListener(
         // PAYMENT SELECTION
         // =============================
 
-        const paymentButtons =
-            document.querySelectorAll(
-                ".payment-btn"
-            );
+const paymentButtons =
+    document.querySelectorAll(".payment-btn");
+
+const selectedPaymentMethod =
+    document.getElementById("selectedPaymentMethod");
 
 
-        paymentButtons.forEach(
-            function (button) {
+paymentButtons.forEach(function (button) {
 
-                button.addEventListener(
-                    "click",
-                    function () {
+    button.addEventListener("click", function () {
 
-                        paymentButtons
-                            .forEach(
-                                function (item) {
+        paymentButtons.forEach(function (item) {
 
-                                    item.classList
-                                        .remove(
-                                            "active"
-                                        );
+            item.classList.remove("active");
 
-                                }
-                            );
+        });
 
+        button.classList.add("active");
 
-                        button.classList.add(
-                            "active"
-                        );
+        selectedPaymentMethod.value =
+            button.dataset.payment;
 
-                        showCheckoutToast(
-                            "Payment method selected: " +
-                            button.dataset.payment
-                            );
-
-                    }
-                );
-
-            }
+        showCheckoutToast(
+            "Payment method selected: " +
+            button.dataset.payment
         );
+
+    });
+
+});
         const checkoutToast =
             document.getElementById("checkoutToast");
 
