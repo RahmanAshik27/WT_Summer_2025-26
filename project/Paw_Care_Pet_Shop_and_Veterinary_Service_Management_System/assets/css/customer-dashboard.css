@@ -721,3 +721,57 @@ body {
 
     transition: 0.3s ease;
 }
+
+
+   /* BEST SELLER BADGE */
+
+
+.item-card {
+    position: relative;
+}
+
+.best-seller-badge {
+    position: absolute;
+
+    top: 8px;
+    left: 8px;
+
+    z-index: 5;
+
+    background: #f7941d;
+    color: white;
+
+    padding: 5px 8px;
+
+    border-radius: 5px;
+
+    font-size: 11px;
+    font-weight: bold;
+
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================
+   BEST SELLER CATEGORY TITLE
+========================= */
+
+.best-category-title {
+    grid-column: 1 / -1;
+
+    background: #1d2a3e;
+    color: #ffffff;
+
+    padding: 11px 15px;
+
+    margin-top: 5px;
+
+    border-left: 5px solid #12bb8b;
+
+    border-radius: 6px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    letter-spacing: 0.5px;
+}
+

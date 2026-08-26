@@ -463,6 +463,43 @@ while (
 
 mysqli_stmt_close($cart_stmt);
 
+
+// FETCH BEST SELLERS
+
+
+$best_seller_sql = "
+    SELECT
+        oi.item_type,
+        oi.item_id,
+        oi.item_name,
+        SUM(oi.quantity) AS total_sold
+    FROM order_items oi
+    JOIN orders o
+        ON oi.order_id = o.order_id
+    WHERE o.order_status != 'Cancelled'
+    GROUP BY
+        oi.item_type,
+        oi.item_id,
+        oi.item_name
+    ORDER BY total_sold DESC
+";
+
+$best_seller_result =
+    mysqli_query($conn, $best_seller_sql);
+
+
+$best_sellers = [];
+
+
+while (
+    $best_item =
+    mysqli_fetch_assoc($best_seller_result)
+) {
+
+    $best_sellers[] =
+        $best_item;
+}
+
 ?>
 
 
@@ -684,18 +721,19 @@ mysqli_stmt_close($cart_stmt);
 
     <?php while ($pet = mysqli_fetch_assoc($pet_result)): ?>
 
-        <article
-            class="item-card"
-            data-type="pet"
-            data-category="<?php echo strtolower(
-                htmlspecialchars($pet["category_name"])
-            ); ?>"
-            data-name="<?php echo strtolower(
-                htmlspecialchars($pet["pet_name"])
-            ); ?>"
-            data-extra="<?php echo strtolower(
-                htmlspecialchars($pet["breed"])
-            ); ?>">
+            <article
+                class="item-card"
+                data-id="<?php echo (int) $pet["pet_id"]; ?>"
+                data-type="pet"
+                data-category="<?php echo strtolower(
+                    htmlspecialchars($pet["category_name"])
+                ); ?>"
+                data-name="<?php echo strtolower(
+                    htmlspecialchars($pet["pet_name"])
+                ); ?>"
+                data-extra="<?php echo strtolower(
+                    htmlspecialchars($pet["breed"])
+                ); ?>">
 
             <div class="item-image">
 
@@ -775,18 +813,19 @@ mysqli_stmt_close($cart_stmt);
 
     <?php while ($product = mysqli_fetch_assoc($product_result)): ?>
 
-            <article
-                class="item-card"
-                data-type="product"
-                data-category="<?php echo strtolower(
-                    htmlspecialchars($product["category_name"])
-                ); ?>"
-                data-name="<?php echo strtolower(
-                    htmlspecialchars($product["product_name"])
-                ); ?>"
-                data-extra="<?php echo strtolower(
-                    htmlspecialchars($product["brand"] ?? "")
-                ); ?>">
+        <article
+            class="item-card"
+            data-id="<?php echo (int) $product["product_id"]; ?>"
+            data-type="product"
+            data-category="<?php echo strtolower(
+                htmlspecialchars($product["category_name"])
+            ); ?>"
+            data-name="<?php echo strtolower(
+                htmlspecialchars($product["product_name"])
+            ); ?>"
+            data-extra="<?php echo strtolower(
+                htmlspecialchars($product["brand"] ?? "")
+            ); ?>">
 
             <div class="item-image">
 
@@ -1010,6 +1049,13 @@ mysqli_stmt_close($cart_stmt);
 
 </div>
 
+<script>
+
+const bestSellerItems = <?php
+    echo json_encode($best_sellers);
+?>;
+
+</script>
 
 <script src="../assets/js/customer-dashboard.js"></script>
 
