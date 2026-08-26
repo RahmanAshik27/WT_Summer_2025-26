@@ -1,0 +1,10 @@
+# Microsoft Word temporary files
+~$*.docx
+~WRL*.tmp
+
+# General temporary files
+*.tmp
+
+# Operating system files
+.DS_Store
+Thumbs.db
