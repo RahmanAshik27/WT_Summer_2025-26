@@ -1006,9 +1006,12 @@ while (
 
             <div class="cash-memo-actions">
 
-                <button class="generate-bill-btn">
-                    🧾 GENERATE BILL
-                </button>
+            <a
+                href="billing.php"
+                class="generate-bill-btn billing-link"
+            >
+                🧾 GENERATE BILL
+            </a>
 
             <form
                 method="POST"
