@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // =========================================
+    
     // ELEMENTS
-    // =========================================
+    
 
     const currentTime =
         document.getElementById("currentTime");
@@ -12,23 +12,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const itemCards =
         document.querySelectorAll(".item-card");
+    const itemsGrid =
+    document.getElementById("itemsGrid");
+
+    const originalCardOrder =
+    Array.from(itemCards);
 
     const searchInput =
         document.getElementById("dashboardSearch");
 
 
-    // =========================================
+  
     // CURRENT TIME
-    // =========================================
+  
 
     function updateTime() {
 
+        if (!currentTime) {
+            return;
+        }
+
         const now = new Date();
 
-        if (currentTime) {
-            currentTime.innerText =
-                now.toLocaleTimeString();
-        }
+        currentTime.innerText =
+            now.toLocaleTimeString();
     }
 
     updateTime();
@@ -37,49 +44,58 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // =========================================
-    // SIDEBAR CATEGORY FILTER
+    // REMOVE BEST SELLER BADGES
     // =========================================
 
-    menuButtons.forEach(function (button) {
+    function removeBestSellerBadges() {
 
-        button.addEventListener("click", function () {
+        document
+            .querySelectorAll(".best-seller-badge")
+            .forEach(function (badge) {
 
-            // Remove active class from all buttons
-            menuButtons.forEach(function (item) {
-                item.classList.remove("active");
+                badge.remove();
+
             });
+    }
 
-            // Make clicked button active
-            button.classList.add("active");
+    function removeBestSellerCategoryTitles() {
 
+    document
+        .querySelectorAll(".best-category-title")
+        .forEach(function (title) {
 
-            const selectedFilter =
-                button.dataset.filter;
+            title.remove();
 
-
-            // Clear search box when category is clicked
-            if (searchInput) {
-                searchInput.value = "";
-            }
-
-
-            // Best Sellers will be implemented later
-            if (selectedFilter === "best") {
-                return;
-            }
-
-
-            filterItems(selectedFilter);
         });
+
+}
+
+function restoreNormalCardOrder() {
+
+    if (!itemsGrid) {
+        return;
+    }
+
+    originalCardOrder.forEach(function (card) {
+
+        itemsGrid.appendChild(card);
 
     });
 
+}
+
 
     // =========================================
-    // CATEGORY FILTER FUNCTION
+    // CATEGORY FILTER
     // =========================================
 
     function filterItems(filter) {
+
+    removeBestSellerBadges();
+
+    removeBestSellerCategoryTitles();
+
+    restoreNormalCardOrder();
 
         itemCards.forEach(function (card) {
 
@@ -97,22 +113,22 @@ document.addEventListener("DOMContentLoaded", function () {
             let shouldShow = false;
 
 
-            // Dashboard → Show everything
+            // Dashboard
             if (filter === "all") {
 
                 shouldShow = true;
+
             }
 
-            // -------------------------
-            // PET FILTERS
-            // -------------------------
-
+            // Pets
             else if (
                 filter === "cat" &&
                 itemType === "pet" &&
                 category === "cat"
             ) {
+
                 shouldShow = true;
+
             }
 
             else if (
@@ -120,7 +136,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 itemType === "pet" &&
                 category === "dog"
             ) {
+
                 shouldShow = true;
+
             }
 
             else if (
@@ -128,7 +146,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 itemType === "pet" &&
                 category === "rabbit"
             ) {
+
                 shouldShow = true;
+
             }
 
             else if (
@@ -136,19 +156,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 itemType === "pet" &&
                 category === "bird"
             ) {
+
                 shouldShow = true;
+
             }
 
-            // -------------------------
-            // PRODUCT FILTERS
-            // -------------------------
-
+            // Products
             else if (
                 filter === "food" &&
                 itemType === "product" &&
                 category === "pet food"
             ) {
+
                 shouldShow = true;
+
             }
 
             else if (
@@ -159,7 +180,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     category === "pet accessories"
                 )
             ) {
+
                 shouldShow = true;
+
             }
 
             else if (
@@ -170,22 +193,318 @@ document.addEventListener("DOMContentLoaded", function () {
                     category === "pet medicine"
                 )
             ) {
+
                 shouldShow = true;
+
             }
 
 
-            if (shouldShow) {
+            card.style.display =
+                shouldShow ? "flex" : "none";
 
-                card.style.display = "flex";
+        });
+    }
 
-            } else {
 
-                card.style.display = "none";
+    function showBestSellers() {
+
+    // -----------------------------------------
+    // Clean old Best Seller UI
+    // -----------------------------------------
+
+    removeBestSellerBadges();
+
+    removeBestSellerCategoryTitles();
+
+
+    // -----------------------------------------
+    // Hide all normal cards first
+    // -----------------------------------------
+
+    itemCards.forEach(function (card) {
+
+        card.style.display = "none";
+
+    });
+
+
+    // -----------------------------------------
+    // Safety Check
+    // -----------------------------------------
+
+    if (
+        typeof bestSellerItems === "undefined" ||
+        !Array.isArray(bestSellerItems) ||
+        bestSellerItems.length === 0
+    ) {
+
+        console.log("No best seller data available.");
+
+        return;
+    }
+
+
+    // -----------------------------------------
+    // Create category groups
+    // -----------------------------------------
+
+    const categoryGroups = {};
+
+
+    bestSellerItems.forEach(function (bestItem) {
+
+        const bestType =
+            String(bestItem.item_type);
+
+        const bestId =
+            String(bestItem.item_id);
+
+
+        itemCards.forEach(function (card) {
+
+            const cardType =
+                String(card.dataset.type || "");
+
+            const cardId =
+                String(card.dataset.id || "");
+
+
+            if (
+                cardType === bestType &&
+                cardId === bestId
+            ) {
+
+                const category =
+                    (card.dataset.category || "Other")
+                        .trim();
+
+
+                // Category group না থাকলে create
+                if (!categoryGroups[category]) {
+
+                    categoryGroups[category] = [];
+
+                }
+
+
+                categoryGroups[category].push({
+
+                    card: card,
+
+                    totalSold:
+                        parseInt(
+                            bestItem.total_sold,
+                            10
+                        ) || 0
+
+                });
+
             }
 
         });
 
+    });
+
+
+    // -----------------------------------------
+    // Sort each category by sales
+    // -----------------------------------------
+
+    Object.keys(categoryGroups)
+        .forEach(function (category) {
+
+            categoryGroups[category].sort(
+                function (a, b) {
+
+                    return (
+                        b.totalSold -
+                        a.totalSold
+                    );
+
+                }
+            );
+
+        });
+
+
+    // -----------------------------------------
+    // Display Category-wise Best Sellers
+    // -----------------------------------------
+
+    Object.keys(categoryGroups)
+        .forEach(function (category) {
+
+            // Category heading
+            const categoryTitle =
+                document.createElement("div");
+
+            categoryTitle.className =
+                "best-category-title";
+
+            categoryTitle.innerText =
+                getCategoryIcon(category) +
+                " " +
+                category.toUpperCase();
+
+
+            itemsGrid.appendChild(
+                categoryTitle
+            );
+
+
+            // Cards under this category
+            categoryGroups[category]
+                .forEach(function (item) {
+
+                    const card =
+                        item.card;
+
+
+                    card.style.display =
+                        "flex";
+
+
+                    // Sold badge
+                    let badge =
+                        card.querySelector(
+                            ".best-seller-badge"
+                        );
+
+
+                    if (!badge) {
+
+                        badge =
+                            document.createElement(
+                                "div"
+                            );
+
+                        badge.className =
+                            "best-seller-badge";
+
+                        card.prepend(badge);
+
+                    }
+
+
+                    badge.innerText =
+                        "🔥 Sold: " +
+                        item.totalSold;
+
+
+                    // Move card below category heading
+                    itemsGrid.appendChild(card);
+
+                });
+
+        });
+
+}
+
+function getCategoryIcon(category) {
+
+    const categoryName =
+        category.toLowerCase();
+
+
+    if (categoryName === "cat") {
+        return "🐱";
     }
+
+    if (categoryName === "dog") {
+        return "🐶";
+    }
+
+    if (categoryName === "rabbit") {
+        return "🐰";
+    }
+
+    if (categoryName === "bird") {
+        return "🐦";
+    }
+
+    if (categoryName === "fish") {
+        return "🐟";
+    }
+
+    if (categoryName === "pet food") {
+        return "🍖";
+    }
+
+    if (
+        categoryName === "accessories" ||
+        categoryName === "pet accessories"
+    ) {
+        return "🎾";
+    }
+
+    if (
+        categoryName === "medicine" ||
+        categoryName === "pet medicine"
+    ) {
+        return "💊";
+    }
+
+    if (categoryName === "toys") {
+        return "🧸";
+    }
+
+    if (categoryName === "grooming") {
+        return "🧴";
+    }
+
+
+    return "🐾";
+}
+
+
+    // =========================================
+    // SIDEBAR BUTTON EVENTS
+    // =========================================
+
+    menuButtons.forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                // Clear active state
+                menuButtons.forEach(function (item) {
+
+                    item.classList.remove("active");
+
+                });
+
+
+                // Selected button active
+                button.classList.add("active");
+
+
+                const selectedFilter =
+                    button.dataset.filter;
+
+
+                // Clear search
+                if (searchInput) {
+
+                    searchInput.value = "";
+
+                }
+
+
+                if (selectedFilter === "best") {
+
+                    showBestSellers();
+
+                } else {
+
+                    filterItems(selectedFilter);
+
+                }
+
+            }
+        );
+
+    });
 
 
     // =========================================
@@ -194,76 +513,83 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (searchInput) {
 
-        searchInput.addEventListener("input", function () {
+        searchInput.addEventListener(
+            "input",
+            function () {
 
-            const searchText =
-                searchInput.value
-                    .toLowerCase()
-                    .trim();
+                removeBestSellerBadges();
 
+                removeBestSellerCategoryTitles();
 
-            // If search is empty
-            if (searchText === "") {
-
-                filterItems("all");
-
-                setDashboardActive();
-
-                return;
-            }
+                restoreNormalCardOrder();
 
 
-            // Remove active sidebar selection while searching
-            menuButtons.forEach(function (button) {
-                button.classList.remove("active");
-            });
+                const searchText =
+                    searchInput.value
+                        .toLowerCase()
+                        .trim();
 
 
-            // Search every card
-            itemCards.forEach(function (card) {
+                // Empty search → Dashboard
+                if (searchText === "") {
 
-                const itemName =
-                    (card.dataset.name || "")
-                        .toLowerCase();
+                    filterItems("all");
 
-                const category =
-                    (card.dataset.category || "")
-                        .toLowerCase();
+                    setDashboardActive();
 
-                const itemType =
-                    (card.dataset.type || "")
-                        .toLowerCase();
-
-                const extra =
-                    (card.dataset.extra || "")
-                        .toLowerCase();
-
-
-                const searchableText =
-                    itemName + " " +
-                    category + " " +
-                    itemType + " " +
-                    extra;
-
-
-                if (searchableText.includes(searchText)) {
-
-                    card.style.display = "flex";
-
-                } else {
-
-                    card.style.display = "none";
+                    return;
                 }
 
-            });
 
-        });
+                // Remove sidebar active state
+                menuButtons.forEach(function (button) {
+
+                    button.classList.remove("active");
+
+                });
+
+
+                itemCards.forEach(function (card) {
+
+                    const itemName =
+                        (card.dataset.name || "")
+                            .toLowerCase();
+
+                    const category =
+                        (card.dataset.category || "")
+                            .toLowerCase();
+
+                    const itemType =
+                        (card.dataset.type || "")
+                            .toLowerCase();
+
+                    const extra =
+                        (card.dataset.extra || "")
+                            .toLowerCase();
+
+
+                    const searchableText =
+                        itemName + " " +
+                        category + " " +
+                        itemType + " " +
+                        extra;
+
+
+                    card.style.display =
+                        searchableText.includes(searchText)
+                            ? "flex"
+                            : "none";
+
+                });
+
+            }
+        );
 
     }
 
 
     // =========================================
-    // SET DASHBOARD ACTIVE
+    // DASHBOARD ACTIVE
     // =========================================
 
     function setDashboardActive() {
@@ -272,63 +598,69 @@ document.addEventListener("DOMContentLoaded", function () {
 
             button.classList.remove("active");
 
-            if (button.dataset.filter === "all") {
+
+            if (
+                button.dataset.filter === "all"
+            ) {
+
                 button.classList.add("active");
+
             }
 
         });
-
     }
+
 
     // =========================================
-// CART TOAST
-// =========================================
+    // CART TOAST
+    // =========================================
 
-const cartToast =
-    document.getElementById("cartToast");
+    const cartToast =
+        document.getElementById("cartToast");
 
-const toastClose =
-    document.getElementById("toastClose");
-
-
-if (cartToast) {
-
-    // Automatically hide after 3 seconds
-    setTimeout(function () {
-
-        hideToast();
-
-    }, 3000);
+    const toastClose =
+        document.getElementById("toastClose");
 
 
-    // Manual close
-    if (toastClose) {
+    function hideToast() {
 
-        toastClose.addEventListener(
-            "click",
-            function () {
+        if (!cartToast) {
+            return;
+        }
 
-                hideToast();
-
-            }
-        );
-    }
-}
+        cartToast.classList.add("toast-hide");
 
 
-function hideToast() {
+        setTimeout(function () {
 
-    if (!cartToast) {
-        return;
+            cartToast.remove();
+
+        }, 300);
     }
 
-    cartToast.classList.add("toast-hide");
 
-    setTimeout(function () {
+    if (cartToast) {
 
-        cartToast.remove();
+        setTimeout(function () {
 
-    }, 300);
-}
+            hideToast();
+
+        }, 3000);
+
+
+        if (toastClose) {
+
+            toastClose.addEventListener(
+                "click",
+                function () {
+
+                    hideToast();
+
+                }
+            );
+
+        }
+
+    }
 
 });
