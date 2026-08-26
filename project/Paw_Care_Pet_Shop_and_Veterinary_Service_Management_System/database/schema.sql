@@ -161,10 +161,27 @@ CREATE TABLE carts (
 CREATE TABLE orders (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT NOT NULL,
-    total_amount DECIMAL(10,2) NOT NULL,
-    delivery_address TEXT NOT NULL,
-    payment_method ENUM('Cash on Delivery')
-        NOT NULL DEFAULT 'Cash on Delivery',
+   total_amount DECIMAL(10,2) NOT NULL,
+
+delivery_address TEXT NOT NULL,
+
+delivery_method ENUM(
+    'Pathao Fast',
+    'PetPanda Go',
+    'Speed Fast',
+    'Jhinku BD',
+    'Shop Pickup'
+)
+NOT NULL DEFAULT 'Pathao Fast',
+
+payment_method ENUM(
+    'bKash',
+    'Nagad',
+    'Rocket',
+    'Credit Card',
+    'Cash on Delivery'
+)
+NOT NULL DEFAULT 'Cash on Delivery',
     payment_status ENUM('Pending', 'Paid')
         DEFAULT 'Pending',
     order_status ENUM(
