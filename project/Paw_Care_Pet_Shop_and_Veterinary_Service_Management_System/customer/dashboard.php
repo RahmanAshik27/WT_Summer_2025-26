@@ -569,7 +569,7 @@ while (
                 <?php echo htmlspecialchars($username); ?>
             </span>
 
-            <a href="#" class="profile-avatar">
+            <a href="profile.php" class="profile-avatar">
 
                 <?php
                 echo strtoupper(
