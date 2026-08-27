@@ -182,10 +182,39 @@ mysqli_stmt_close($order_stmt);
     </header>
 
 
-    <!-- =========================
-         MAIN PROFILE AREA
-    ========================== -->
+            <?php
+        if (
+            isset($_GET["updated"]) &&
+            $_GET["updated"] === "1"
+        ):
+        ?>
 
+        <script>
+
+        alert(
+            "Profile updated successfully!"
+        );
+
+        </script>
+
+        <?php endif; ?>
+
+                <?php
+        if (
+            isset($_GET["password_changed"]) &&
+            $_GET["password_changed"] === "1"
+        ):
+        ?>
+
+        <script>
+            alert("Password changed successfully!");
+        </script>
+
+        <?php endif; ?>
+
+         <!-- MAIN PROFILE AREA -->
+    
+    
     <main class="profile-content">
 
 
@@ -236,28 +265,23 @@ mysqli_stmt_close($order_stmt);
 
                 <div class="profile-actions">
 
-                    <button
-                        type="button"
-                        class="edit-profile-btn"
-                    >
-                        ✎ Edit Profile
-                    </button>
+                <a href="edit_profile.php" class="edit-profile-btn">
+                    ✎ Edit Profile
+                </a>
 
-
-                    <button
-                        type="button"
+                    <a
+                        href="change_password.php"
                         class="change-password-btn"
                     >
                         🔒 Change Password
-                    </button>
+                    </a>
 
-
-                    <button
-                        type="button"
+                    <a
+                        href="../logout.php"
                         class="logout-btn"
                     >
-                        ↪ Logout
-                    </button>
+                        Logout
+                    </a>
 
                 </div>
 
@@ -352,142 +376,154 @@ mysqli_stmt_close($order_stmt);
 
             <!-- RECENT ORDERS -->
 
-            <section class="recent-orders-panel">
+            <!-- =========================
+     RECENT ORDERS
+========================== -->
 
-                <div class="orders-heading">
+<section class="recent-orders-panel">
 
-                    <div class="panel-title">
-                        🚚 Recent Orders
+    <!-- Heading -->
+    <div class="recent-orders-header">
+
+        <h2>
+            🚚 Recent Orders
+        </h2>
+
+        <a href="orders.php">
+            View All
+        </a>
+
+    </div>
+
+
+    <!-- Orders -->
+    <div class="recent-orders-list">
+
+        <?php if (empty($recent_orders)): ?>
+
+            <div class="no-orders">
+                No orders found yet.
+            </div>
+
+        <?php else: ?>
+
+            <?php foreach ($recent_orders as $order): ?>
+
+                <article class="recent-order-card">
+
+                    <!-- Order ID -->
+                    <div class="recent-order-column">
+
+                        <span class="recent-order-label">
+                            Order ID
+                        </span>
+
+                        <strong>
+                            #<?php echo (int) $order["order_id"]; ?>
+                        </strong>
+
                     </div>
 
-                    <a href="#">
-                        View All
+
+                    <!-- Date -->
+                    <div class="recent-order-column">
+
+                        <span class="recent-order-label">
+                            Date
+                        </span>
+
+                        <strong>
+                            <?php
+                            echo date(
+                                "d M Y",
+                                strtotime($order["order_date"])
+                            );
+                            ?>
+                        </strong>
+
+                    </div>
+
+
+                    <!-- Total -->
+                    <div class="recent-order-column">
+
+                        <span class="recent-order-label">
+                            Total
+                        </span>
+
+                        <strong class="recent-order-price">
+                            ৳<?php
+                            echo number_format(
+                                $order["total_amount"],
+                                2
+                            );
+                            ?>
+                        </strong>
+
+                    </div>
+
+
+                    <!-- Status -->
+                    <div class="recent-order-column">
+
+                        <span class="recent-order-label">
+                            Status
+                        </span>
+
+                        <span class="recent-order-status">
+                            <?php
+                            echo htmlspecialchars(
+                                $order["order_status"]
+                            );
+                            ?>
+                        </span>
+
+                    </div>
+
+
+                    <!-- Delivery + Payment -->
+                    <div class="recent-order-methods">
+
+                        <span>
+                            🚚
+                            <?php
+                            echo htmlspecialchars(
+                                $order["delivery_method"]
+                            );
+                            ?>
+                        </span>
+
+                        <span>
+                            💳
+                            <?php
+                            echo htmlspecialchars(
+                                $order["payment_method"]
+                            );
+                            ?>
+                        </span>
+
+                    </div>
+
+
+                    <!-- Details -->
+                    <a
+                        href="order_details.php?order_id=<?php
+                            echo (int) $order["order_id"];
+                        ?>"
+                        class="recent-order-details-btn"
+                    >
+                        [ VIEW DETAILS ]
                     </a>
 
-                </div>
+                </article>
 
+            <?php endforeach; ?>
 
-                <div class="recent-orders-list">
+        <?php endif; ?>
 
-                    <?php if (empty($recent_orders)): ?>
+    </div>
 
-                        <div class="no-orders">
-                            No orders found yet.
-                        </div>
-
-                    <?php else: ?>
-
-
-                        <?php foreach ($recent_orders as $order): ?>
-
-                            <article class="order-card">
-
-                                <div class="order-field">
-
-                                    <small>
-                                        Order ID
-                                    </small>
-
-                                    <strong>
-                                        #<?php echo
-                                            (int) $order["order_id"];
-                                        ?>
-                                    </strong>
-
-                                </div>
-
-
-                                <div class="order-field">
-
-                                    <small>
-                                        Date
-                                    </small>
-
-                                    <strong>
-                                        <?php echo date(
-                                            "d M Y",
-                                            strtotime(
-                                                $order["order_date"]
-                                            )
-                                        ); ?>
-                                    </strong>
-
-                                </div>
-
-
-                                <div class="order-field">
-
-                                    <small>
-                                        Total
-                                    </small>
-
-                                    <strong class="order-price">
-                                        ৳<?php echo number_format(
-                                            $order["total_amount"],
-                                            2
-                                        ); ?>
-                                    </strong>
-
-                                </div>
-
-
-                                <div class="order-field">
-
-                                    <small>
-                                        Status
-                                    </small>
-
-                                    <span class="order-status">
-
-                                        <?php echo htmlspecialchars(
-                                            $order["order_status"]
-                                        ); ?>
-
-                                    </span>
-
-                                </div>
-
-
-                                <div class="order-methods">
-
-                                    <span>
-                                        🚚
-                                        <?php echo htmlspecialchars(
-                                            $order["delivery_method"]
-                                        ); ?>
-                                    </span>
-
-                                    <span>
-                                        💳
-                                        <?php echo htmlspecialchars(
-                                            $order["payment_method"]
-                                        ); ?>
-                                    </span>
-
-                                </div>
-
-
-                                <a
-                                    href="order_details.php?order_id=<?php
-                                        echo (int) $order["order_id"];
-                                    ?>"
-                                    class="order-details-btn"
-                                >
-                                    [ VIEW DETAILS ]
-                                </a>
-
-                            </article>
-
-                        <?php endforeach; ?>
-
-
-                    <?php endif; ?>
-
-                </div>
-
-            </section>
-
-        </section>
+</section>
 
     </main>
 
