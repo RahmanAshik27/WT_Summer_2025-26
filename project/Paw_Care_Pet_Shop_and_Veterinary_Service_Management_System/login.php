@@ -190,6 +190,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body class="auth-page">
 
+<?php
+if (
+    isset($_GET["logout"]) &&
+    $_GET["logout"] === "1"
+):
+?>
+
+<script>
+    alert("You have been logged out successfully!");
+</script>
+
+<?php endif; ?>
+
     <!-- Top Bar -->
     <header class="top-bar">
 

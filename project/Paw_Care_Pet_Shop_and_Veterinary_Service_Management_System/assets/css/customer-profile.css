@@ -125,13 +125,11 @@ body {
 
     display: grid;
 
-    grid-template-columns:
-        250px
-        minmax(550px, 1fr);
+    grid-template-columns: 250px minmax(0, 1fr);
 
-    gap: 32px;
+    gap: 28px;
 
-    padding: 40px 35px;
+    padding: 32px 30px;
 }
 
 
@@ -218,7 +216,8 @@ body {
     gap: 9px;
 }
 
-.profile-actions button {
+.profile-actions button,
+.profile-actions a {
     width: 100%;
 
     padding: 11px;
@@ -229,6 +228,14 @@ body {
     font-weight: bold;
 
     cursor: pointer;
+
+    text-decoration: none;
+
+    display: block;
+
+    text-align: center;
+
+    transition: 0.2s;
 }
 
 .edit-profile-btn {
@@ -291,15 +298,20 @@ body {
 ========================= */
 
 .profile-right {
-    display: flex;
+    width: 100%;
 
+    display: flex;
     flex-direction: column;
 
-    gap: 32px;
+    gap: 28px;
+
+    min-width: 0;
 }
 
 .information-panel,
 .recent-orders-panel {
+    width: 100%;
+
     background: #131d2e;
 
     border-radius: 8px;
@@ -322,6 +334,10 @@ body {
 
     margin-bottom: 18px;
 }
+.orders-heading .panel-title {
+    margin-bottom: 0;
+}
+
 
 .information-grid {
     display: grid;
@@ -380,16 +396,19 @@ body {
 
 .orders-heading {
     display: flex;
-
-    align-items: flex-start;
-
+    align-items: center;
     justify-content: space-between;
+
+    width: 100%;
+
+    margin-bottom: 16px;
 }
 
 .orders-heading .panel-title {
     flex: 1;
-}
 
+    margin-bottom: 0;
+}
 .orders-heading > a {
     color: #ffad6a;
 
@@ -397,50 +416,57 @@ body {
 
     text-decoration: none;
 
-    margin-top: 2px;
+    font-weight: bold;
+
+    margin-left: 15px;
+
+    white-space: nowrap;
 }
 
 .recent-orders-list {
-    display: flex;
+    width: 100%;
 
+    display: flex;
     flex-direction: column;
 
     gap: 12px;
 }
 
 .order-card {
-    min-height: 85px;
+    width: 100%;
+
+    min-height: 90px;
 
     background: #0d1526;
 
-    border:
-        1px solid #273247;
+    border: 1px solid #273247;
 
     border-radius: 6px;
 
-    padding: 13px 16px;
+    padding: 14px 16px;
 
     display: grid;
 
     grid-template-columns:
         0.7fr
-        1fr
-        0.8fr
-        0.8fr
-        1.2fr
+        0.9fr
+        0.9fr
+        0.9fr
+        1.3fr
         auto;
 
     align-items: center;
 
-    gap: 12px;
+    gap: 18px;
 }
 
 .order-field {
     display: flex;
-
     flex-direction: column;
 
-    gap: 4px;
+    gap: 5px;
+
+    min-width: 0;
 }
 
 .order-field small {
@@ -475,18 +501,19 @@ body {
 
 .order-methods {
     display: flex;
-
     flex-direction: column;
 
-    gap: 5px;
+    gap: 6px;
 
     color: #c3c9d3;
 
     font-size: 10px;
+
+    min-width: 0;
 }
 
 .order-details-btn {
-    padding: 9px 11px;
+    padding: 9px 12px;
 
     background: #333c50;
     color: #f0f2f5;
@@ -499,6 +526,8 @@ body {
     font-weight: bold;
 
     white-space: nowrap;
+
+    justify-self: end;
 }
 
 .order-details-btn:hover {
@@ -600,5 +629,288 @@ body {
         gap: 5px;
 
         text-align: center;
+    }
+}
+
+.profile-page {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+}.profile-footer {
+    margin-top: auto;
+}
+
+/* =========================================
+   FIXED RECENT ORDERS
+========================================= */
+
+.recent-orders-panel {
+    width: 100% !important;
+
+    display: block !important;
+
+    background: #131d2e;
+
+    border-radius: 8px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+
+/* HEADER */
+
+.recent-orders-header {
+    width: 100%;
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    justify-content: space-between !important;
+    align-items: center !important;
+
+    padding-bottom: 15px;
+    margin-bottom: 16px;
+
+    border-bottom: 1px solid #273247;
+}
+
+.recent-orders-header h2 {
+    margin: 0;
+
+    color: #d8dde6;
+
+    font-size: 14px;
+    font-weight: normal;
+
+    white-space: nowrap;
+}
+
+.recent-orders-header a {
+    margin-left: auto;
+
+    color: #ffad6a;
+
+    font-size: 11px;
+    font-weight: bold;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+}
+
+.recent-orders-header a:hover {
+    color: #f7941d;
+}
+
+
+/* ORDER LIST */
+
+.recent-orders-list {
+    width: 100% !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 12px;
+}
+
+
+/* SINGLE ORDER */
+
+.recent-order-card {
+    width: 100% !important;
+
+    min-height: 88px;
+
+    background: #0d1526;
+
+    border: 1px solid #273247;
+
+    border-radius: 6px;
+
+    padding: 14px 16px;
+
+    display: grid !important;
+
+    grid-template-columns:
+        0.7fr
+        1fr
+        1fr
+        0.8fr
+        1.3fr
+        auto;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+
+/* ORDER COLUMN */
+
+.recent-order-column {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.recent-order-label {
+    color: #8f98aa;
+
+    font-size: 9px;
+}
+
+.recent-order-column strong {
+    color: #f0f2f6;
+
+    font-size: 11px;
+}
+
+
+/* PRICE */
+
+.recent-order-price {
+    color: #ffad6a !important;
+}
+
+
+/* STATUS */
+
+.recent-order-status {
+    width: fit-content;
+
+    padding: 4px 8px;
+
+    background: #4c4538;
+
+    color: #ffbc77;
+
+    border-radius: 12px;
+
+    font-size: 9px;
+}
+
+
+/* DELIVERY + PAYMENT */
+
+.recent-order-methods {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    color: #c3c9d3;
+
+    font-size: 10px;
+}
+
+.recent-order-methods span {
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* VIEW DETAILS */
+
+.recent-order-details-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    justify-self: end;
+
+    padding: 9px 12px;
+
+    background: #333c50;
+
+    color: #ffffff;
+
+    border-radius: 5px;
+
+    text-decoration: none;
+
+    font-size: 10px;
+    font-weight: bold;
+
+    white-space: nowrap;
+
+    transition: 0.2s;
+}
+
+.recent-order-details-btn:hover {
+    background: #f7941d;
+}
+
+
+/* NO ORDERS */
+
+.no-orders {
+    width: 100%;
+
+    padding: 30px;
+
+    text-align: center;
+
+    color: #8f98aa;
+
+    background: #0d1526;
+
+    border-radius: 6px;
+}
+
+
+/* =========================================
+   RECENT ORDER RESPONSIVE
+========================================= */
+
+@media (max-width: 1200px) {
+
+    .recent-order-card {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+        row-gap: 16px;
+    }
+
+    .recent-order-details-btn {
+        justify-self: start;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .recent-order-card {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .recent-order-card {
+        grid-template-columns: 1fr;
+    }
+
+    .recent-order-details-btn {
+        justify-self: stretch;
     }
 }
