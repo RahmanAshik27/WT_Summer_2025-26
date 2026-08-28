@@ -7,6 +7,72 @@ if (!isset($_SESSION["user_id"]) || ($_SESSION["role"] ?? "") !== "admin") {
     exit;
 }
 
+$success_message = "";
+$error_message = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["add_inventory"])) {
+    $type = $_POST["inventory_type"] ?? "";
+    $item_id = (int)($_POST["item_id"] ?? 0);
+    $price = (float)($_POST["price"] ?? 0);
+    $quantity = (int)($_POST["quantity"] ?? 0);
+
+    if (($type !== "pet" && $type !== "product") || $item_id <= 0 || $price <= 0 || $quantity <= 0) {
+        $error_message = "Please select an item and enter valid information.";
+    } else {
+        if ($type === "pet") {
+            $stmt = mysqli_prepare($conn, "UPDATE pets SET price = ?, stock = stock + ?, status = 'Available' WHERE pet_id = ?");
+        } else {
+            $stmt = mysqli_prepare($conn, "UPDATE products SET price = ?, stock = stock + ? WHERE product_id = ?");
+        }
+
+        mysqli_stmt_bind_param($stmt, "dii", $price, $quantity, $item_id);
+        mysqli_stmt_execute($stmt);
+
+        if (mysqli_stmt_affected_rows($stmt) > 0) {
+            $success_message = "Inventory stock added successfully.";
+        } else {
+            $error_message = "Inventory could not be updated.";
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["remove_inventory"])) {
+    $type = $_POST["remove_type"] ?? "";
+    $item_id = (int)($_POST["remove_item_id"] ?? 0);
+    $quantity = (int)($_POST["remove_quantity"] ?? 0);
+
+    if ($type === "" || $item_id <= 0) {
+        $error_message = "Please select an item from the catalog first.";
+    } elseif ($quantity <= 0) {
+        $error_message = "Please enter a valid remove quantity.";
+    } else {
+        if ($type === "pet") {
+            $stmt = mysqli_prepare($conn, "UPDATE pets SET stock = stock - ? WHERE pet_id = ? AND stock >= ?");
+        } elseif ($type === "product") {
+            $stmt = mysqli_prepare($conn, "UPDATE products SET stock = stock - ? WHERE product_id = ? AND stock >= ?");
+        } else {
+            $stmt = false;
+        }
+
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "iii", $quantity, $item_id, $quantity);
+            mysqli_stmt_execute($stmt);
+
+            if (mysqli_stmt_affected_rows($stmt) > 0) {
+                $success_message = "Inventory stock removed successfully.";
+            } else {
+                $error_message = "Not enough stock available to remove.";
+            }
+
+            mysqli_stmt_close($stmt);
+        } else {
+            $error_message = "Invalid inventory type.";
+        }
+    }
+}
+
 $pets = [];
 $products = [];
 
@@ -37,72 +103,92 @@ if ($result) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Inventory - PawCare</title>
-    <link rel="stylesheet" href="../assets/css/manage-inventory.css">
+    <link rel="stylesheet" href="../assets/css/manage-inventory.css?v=3">
 </head>
 <body>
 
 <div class="management-page">
 
     <aside class="management-sidebar">
-        <h1>▣ Add Inventory</h1>
+        <h1>▣ Manage Stock</h1>
+        <p class="sidebar-text">Select an item from the catalog, then add stock from here.</p>
 
-        <div class="field">
-            <label>Inventory Type</label>
-            <select id="inventoryType">
-                <option value="pet">Pet</option>
-                <option value="product">Product</option>
-            </select>
-        </div>
+        <?php if (!empty($success_message)): ?>
+            <div class="inventory-message success-message"><?= htmlspecialchars($success_message) ?></div>
+        <?php endif; ?>
 
-        <div class="field">
-            <label>Category</label>
-            <select id="categorySelect">
-                <option value="">Select Category</option>
-            </select>
-        </div>
+        <?php if (!empty($error_message)): ?>
+            <div class="inventory-message error-message"><?= htmlspecialchars($error_message) ?></div>
+        <?php endif; ?>
 
-        <div class="field">
-            <label>Pet / Product</label>
-            <select id="itemSelect">
-                <option value="">Select Item</option>
-            </select>
-        </div>
+        <form method="POST" id="inventoryForm">
 
-        <div class="field">
-            <label>Price (BDT)</label>
-            <input type="number" id="itemPrice" placeholder="Enter Price">
-        </div>
+            <div class="field">
+                <label>Inventory Type</label>
+                <select id="inventoryType" name="inventory_type">
+                    <option value="pet">Pet</option>
+                    <option value="product">Product</option>
+                </select>
+            </div>
 
-        <div class="field">
-            <label>Stock Quantity</label>
-            <input type="number" id="stockQuantity" value="1" min="1">
-        </div>
+            <div class="field">
+                <label>Category</label>
+                <select id="categorySelect">
+                    <option value="">Select Category</option>
+                </select>
+            </div>
 
-        <button type="button" class="add-inventory-btn">ADD TO INVENTORY</button>
+            <div class="field">
+                <label>Selected Item</label>
+                <select id="itemSelect" name="item_id" required>
+                    <option value="">Select Item</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Price (BDT)</label>
+                <input type="number" id="itemPrice" name="price" min="0.01" step="0.01" placeholder="Price" required>
+            </div>
+
+            <div class="field">
+                <label>Quantity to Add</label>
+                <input type="number" id="stockQuantity" name="quantity" value="1" min="1" required>
+            </div>
+
+            <button type="submit" name="add_inventory" class="add-inventory-btn">+ ADD STOCK</button>
+        </form>
 
         <div class="managing-status">
             <div>🌐</div>
-            <span>MANAGING INVENTORY</span>
+            <span>PAWCARE INVENTORY</span>
         </div>
     </aside>
 
     <main class="management-content">
 
         <header class="management-header">
-            <strong>▣ PAWCARE PREMIUM SYSTEM</strong>
-
             <div>
+                <strong>▣ PAWCARE INVENTORY MANAGEMENT</strong>
+                <small>Manage pets and products from one place</small>
+            </div>
+
+            <div class="header-time">
                 <span id="currentDate"></span> |
                 <span id="currentTime"></span>
             </div>
         </header>
 
         <section class="catalog-section">
-            <h3>▣ SELECT FROM CATALOG</h3>
+            <div class="section-heading">
+                <div>
+                    <h3>SELECT FROM CATALOG</h3>
+                    <p>Choose a pet or product to manage its stock.</p>
+                </div>
 
-            <div class="catalog-tabs">
-                <button type="button" class="catalog-tab active" data-type="pet">Pets</button>
-                <button type="button" class="catalog-tab" data-type="product">Products</button>
+                <div class="catalog-tabs">
+                    <button type="button" class="catalog-tab active" data-type="pet">Pets</button>
+                    <button type="button" class="catalog-tab" data-type="product">Products</button>
+                </div>
             </div>
 
             <div class="catalog-grid" id="petCatalog">
@@ -116,7 +202,11 @@ if ($result) {
                          data-stock="<?= (int)$pet["stock"] ?>">
 
                         <img src="../uploads/pets/<?= htmlspecialchars($pet["image"] ?? "default_pet.jpg") ?>" alt="<?= htmlspecialchars($pet["pet_name"]) ?>">
-                        <p><?= htmlspecialchars($pet["pet_name"]) ?></p>
+
+                        <div class="catalog-card-info">
+                            <p><?= htmlspecialchars($pet["pet_name"]) ?></p>
+                            <span>Stock: <?= (int)$pet["stock"] ?></span>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -132,36 +222,61 @@ if ($result) {
                          data-stock="<?= (int)$product["stock"] ?>">
 
                         <img src="../uploads/products/<?= htmlspecialchars($product["image"] ?? "default_product.jpg") ?>" alt="<?= htmlspecialchars($product["product_name"]) ?>">
-                        <p><?= htmlspecialchars($product["product_name"]) ?></p>
+
+                        <div class="catalog-card-info">
+                            <p><?= htmlspecialchars($product["product_name"]) ?></p>
+                            <span>Stock: <?= (int)$product["stock"] ?></span>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
         </section>
 
         <section class="selected-preview">
-            <div class="preview-image">
+            <div class="preview-image" id="previewImage">
                 <span>🐾</span>
             </div>
 
             <div class="preview-info">
-                <h2 id="selectedName">Select an inventory item</h2>
+                <span class="selected-label">SELECTED ITEM</span>
+                <h2 id="selectedName">No item selected</h2>
                 <strong id="selectedStock">Database Stock: -- Units</strong>
                 <p id="selectedCategory">Category: --</p>
                 <p id="selectedPrice">Price: --</p>
             </div>
+
+            <div class="remove-panel">
+                <h4>Remove Stock</h4>
+                <p>Enter how many units you want to remove.</p>
+
+            <form method="POST" id="removeInventoryForm">
+                <input type="hidden" name="remove_type" id="removeInventoryType" value="">
+                <input type="hidden" name="remove_item_id" id="removeItemId" value="">
+
+                <label>Quantity to Remove</label>
+                <input type="number" name="remove_quantity" id="removeQuantity" min="1" value="1" required>
+
+                <button type="submit" name="remove_inventory" value="1" class="remove-btn">− REMOVE STOCK</button>
+            </form>
+            </div>
         </section>
 
         <section class="live-monitor">
-            <h3>▣ LIVE TABLE MONITOR</h3>
+            <div class="monitor-title">
+                <div>
+                    <h3>LIVE INVENTORY MONITOR</h3>
+                    <p>Selected inventory information</p>
+                </div>
+            </div>
 
-            <div class="monitor-placeholder">
-                Select a catalog item to view inventory information.
+            <div class="monitor-placeholder" id="monitorContent">
+                Select an item from the catalog to view its information.
             </div>
         </section>
 
         <div class="management-actions">
-            <button type="button" class="remove-btn">🗑 REMOVE SELECTED FROM INVENTORY</button>
-            <a href="dashboard_overview.php" class="back-btn">▣ BACK TO ADMIN DASHBOARD</a>
+            <a href="inventory.php" class="back-btn">← INVENTORY OVERVIEW</a>
+            <a href="dashboard_overview.php" class="back-btn">▣ ADMIN DASHBOARD</a>
         </div>
 
     </main>
