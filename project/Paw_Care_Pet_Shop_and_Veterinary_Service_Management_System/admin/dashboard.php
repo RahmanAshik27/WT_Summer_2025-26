@@ -45,7 +45,7 @@ $username = $_SESSION["username"] ?? "Admin";
 
             <nav class="sidebar-menu">
                 <a href="dashboard_overview.php">▣ Dashboard Overview</a>
-                <a href="#">▤ Inventory Stock</a>
+                <a href="inventory.php">▤ Inventory Stock</a>
                 <a href="#">◕ Sales Analytics</a>
                 <a href="#">🚚 Delivery Tracking</a>
                 <a href="#">★ Customer Reviews</a>
