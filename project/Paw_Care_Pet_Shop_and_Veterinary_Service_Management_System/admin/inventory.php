@@ -81,7 +81,7 @@ foreach ($products as $product) {
                 <a href="inventory.php" class="active">▤ Inventory Stock</a>
                 <a href="sales_analytics.php" class="active">💰 Sales Analytics</a>
                 <a href="delivery_tracking.php">🚚 Delivery Tracking</a>
-                <a href="#">★ Customer Reviews</a>
+                <a href="customer_reviews.php" class="active">★ Customer Reviews</a>
             </nav>
         </aside>
 

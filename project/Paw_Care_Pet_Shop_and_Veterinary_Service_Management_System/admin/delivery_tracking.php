@@ -167,7 +167,7 @@ foreach ($partner_stats as $name => $data) {
                 <a href="inventory.php">▤ Inventory Stock</a>
                 <a href="sales_analytics.php">💰 Sales Analytics</a>
                 <a href="delivery_tracking.php" class="active">🚚 Delivery Tracking</a>
-                <a href="#">★ Customer Reviews</a>
+                <a href="customer_reviews.php" class="active">★ Customer Reviews</a>
             </nav>
         </aside>
 
