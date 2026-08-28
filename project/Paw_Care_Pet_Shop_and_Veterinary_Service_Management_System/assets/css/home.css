@@ -6,21 +6,13 @@ body.home-page {
     color: #172033;
 }
 
-
-
-   /* TOP BAR */
-
-
 .top-bar {
     height: 62px;
     background: #0d192e;
     color: #b9c0cc;
-
     display: flex;
     align-items: center;
-
     padding: 0 24px;
-
     font-size: 15px;
 }
 
@@ -36,7 +28,6 @@ body.home-page {
 
 .window-dots {
     margin-left: auto;
-
     display: flex;
     gap: 10px;
 }
@@ -44,9 +35,7 @@ body.home-page {
 .window-dots span {
     width: 13px;
     height: 13px;
-
     border-radius: 50%;
-
     background: #e5cf69;
 }
 
@@ -58,70 +47,44 @@ body.home-page {
     background: #dc8c98;
 }
 
-
-
-   /* MAIN LAYOUT */
-
+/* main Dashboard Er Main Layout Desgin  */
 
 .home-container {
     flex: 1;
-
     display: flex;
-
     width: 100%;
 }
 
-
-
-   /* SIDEBAR */
-
-
 .home-sidebar {
     width: 280px;
-
     flex-shrink: 0;
-
     background: #182235;
-
     padding: 32px 22px;
-
     display: flex;
     flex-direction: column;
 }
 .sidebar-menu {
     display: flex;
     flex-direction: column;
-
     gap: 14px;
-
     flex: 1;
 }
 
-
-
-   /* SIDEBAR BRAND */
-
-
 .sidebar-brand {
     text-align: center;
-
     margin-bottom: 32px;
 }
 
 .sidebar-logo {
     width: 125px;
     height: 125px;
-
     object-fit: contain;
-
     border-radius: 50%;
-
     margin-bottom: 15px;
 }
 
 .sidebar-brand h2 {
     color: #ffffff;
-
     font-size: 22px;
 }
 
@@ -129,94 +92,65 @@ body.home-page {
     color: #f7941d;
 }
 
-
-
-   /* SIDEBAR MENU */
-
+/* SIDEBAR MENU */
 
 .sidebar-menu {
     display: flex;
     flex-direction: column;
-
     gap: 14px;
 }
 
 .menu-btn {
     display: block;
-
     padding: 16px 12px;
-
     background: #f7941d;
     color: #ffffff;
-
     border-radius: 6px;
-
     text-align: center;
     text-decoration: none;
-
     font-size: 16px;
     font-weight: bold;
-
     transition: 0.2s;
 }
 
 .menu-btn:hover {
     background: #e78510;
-
     transform: translateY(-2px);
 }
 
-
-
-   /* LICENSE BUTTON */
-
+/* LICENSE BUTTON */
 
 .license-btn {
     margin-top: auto;
 }
 
-
-   /* RIGHT CONTENT */
-
-
 .home-content {
     flex: 1;
-
     background: #ffffff;
-
     display: flex;
     flex-direction: column;
 }
 
-
-
-   /* WELCOME HEADER */
-
+/* Page er Welcome Header  */
 
 .welcome-header {
     min-height: 115px;
-
     background: #182235;
     color: #ffffff;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     gap: 15px;
-
     padding: 25px;
 }
 
 .welcome-icon {
     color: #f7941d;
-
     font-size: 34px;
 }
 
 .welcome-header h1 {
     font-size: 34px;
-
     text-align: center;
 }
 
@@ -225,62 +159,42 @@ body.home-page {
 }
 
 
-
-   /* HERO AREA */
-
-
 .hero-area {
     flex: 1;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     padding: 35px;
 }
 
 .hero-image {
     width: 100%;
-
     max-width: 650px;
     max-height: 520px;
-
     object-fit: contain;
 }
 
-
-
-   /* FOOTER */
-
+/* Scrren er fotter part desgin  */
 
 .home-footer {
     min-height: 50px;
-
     background: #f7941d;
     color: #ffffff;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     padding: 12px;
-
     font-size: 14px;
     font-weight: bold;
-
     text-align: center;
 }
 
-
-
-   /* RESPONSIVE */
-
+/* Vivinno Scrren er jonno Desgom */
 
 @media (max-width: 900px) {
 
     .home-sidebar {
         width: 250px;
-
         padding: 25px 18px;
     }
 
@@ -308,7 +222,6 @@ body.home-page {
     }
 }
 
-
 @media (max-width: 750px) {
 
     .home-container {
@@ -326,7 +239,6 @@ body.home-page {
 
     .sidebar-menu {
         max-width: 450px;
-
         margin: auto;
     }
 
@@ -351,16 +263,12 @@ body.home-page {
     }
 }
 
-
 @media (max-width: 500px) {
 
     .top-bar {
         height: auto;
-
         min-height: 55px;
-
         padding: 12px 15px;
-
         font-size: 11px;
     }
 
@@ -378,7 +286,6 @@ body.home-page {
 
     .menu-btn {
         padding: 13px 10px;
-
         font-size: 13px;
     }
 
