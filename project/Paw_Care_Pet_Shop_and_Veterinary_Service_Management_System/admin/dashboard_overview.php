@@ -74,7 +74,7 @@ if ($result) {
 
             <nav class="sidebar-menu">
                 <a href="dashboard_overview.php" class="active">▣ Dashboard Overview</a>
-                <a href="inventory.php">▤ Inventory Stock</a>
+                <a href="inventory.php">▤ Inventory Stocks</a>
                 <a href="#">◕ Sales Analytics</a>
                 <a href="#">🚚 Delivery Tracking</a>
                 <a href="#">★ Customer Reviews</a>
