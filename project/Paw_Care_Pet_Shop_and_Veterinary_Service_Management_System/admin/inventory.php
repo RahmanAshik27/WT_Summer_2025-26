@@ -79,7 +79,7 @@ foreach ($products as $product) {
             <nav class="sidebar-menu">
                 <a href="dashboard_overview.php">▣ Dashboard Overview</a>
                 <a href="inventory.php" class="active">▤ Inventory Stock</a>
-                <a href="#">◕ Sales Analytics</a>
+                <a href="sales_analytics.php" class="active">💰 Sales Analytics</a>
                 <a href="#">🚚 Delivery Tracking</a>
                 <a href="#">★ Customer Reviews</a>
             </nav>
