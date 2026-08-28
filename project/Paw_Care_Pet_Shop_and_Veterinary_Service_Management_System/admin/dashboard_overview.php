@@ -76,7 +76,7 @@ if ($result) {
                 <a href="dashboard_overview.php" class="active">▣ Dashboard Overview</a>
                 <a href="inventory.php">▤ Inventory Stock</a>
                 <a href="sales_analytics.php" class="active">💰 Sales Analytics</a>
-                <a href="#">🚚 Delivery Tracking</a>
+                <a href="delivery_tracking.php">🚚 Delivery Tracking</a>
                 <a href="#">★ Customer Reviews</a>
             </nav>
         </aside>
