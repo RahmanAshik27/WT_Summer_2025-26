@@ -2,27 +2,17 @@ body.auth-page {
     min-height: 100vh;
     background: #182235;
     color: #172033;
-
     display: flex;
     flex-direction: column;
 }
 
-
-
-   /* Top Bar */
-
-
 .top-bar {
     height: 55px;
-
     background: #0d192e;
     color: #b9c0cc;
-
     display: flex;
     align-items: center;
-
     padding: 0 20px;
-
     font-size: 14px;
 }
 
@@ -38,7 +28,6 @@ body.auth-page {
 
 .window-dots {
     margin-left: auto;
-
     display: flex;
     gap: 10px;
 }
@@ -46,9 +35,7 @@ body.auth-page {
 .window-dots span {
     width: 12px;
     height: 12px;
-
     border-radius: 50%;
-
     background: #e5cf69;
 }
 
@@ -61,54 +48,34 @@ body.auth-page {
 }
 
 
-   /* Main Area */
-
-
 .login-container {
     flex: 1;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     padding: 30px 20px;
 }
 
-
-
-   /* Login Card */
-
+/* Login Card er desgin part */
 
 .login-card {
     width: 100%;
     max-width: 380px;
-
     background: #ffffff;
-
     border-radius: 17px;
-
     padding: 30px;
-
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-
-
-   /* Branding */
-
-
 .login-brand {
     text-align: center;
-
     margin-bottom: 22px;
 }
 
 .login-logo {
     width: 80px;
     height: 80px;
-
     object-fit: contain;
-
     margin-bottom: 8px;
 }
 
@@ -120,73 +87,51 @@ body.auth-page {
     color: #f7941d;
 }
 
-
-
-   /* Heading */
-
+/* Login page er header */
 
 .login-heading {
     text-align: center;
-
     margin-bottom: 25px;
 }
 
 .login-heading h1 {
     font-size: 24px;
-
     margin-bottom: 7px;
 }
 
 .login-heading p {
     color: #6b7280;
-
     font-size: 14px;
 }
 
-
-
-   /* Form */
-
+/* Form er desgin  */
 
 .form-group {
     display: flex;
     flex-direction: column;
-
     margin-bottom: 17px;
 }
 
 .form-group label {
     font-size: 13px;
     font-weight: bold;
-
     margin-bottom: 7px;
 }
 
 .form-group input {
     width: 100%;
-
     padding: 13px 14px;
-
     border: 1px solid #d9dce1;
     border-radius: 6px;
-
     background: #f4f5f7;
-
     font-size: 14px;
-
     outline: none;
 }
 
 .form-group input:focus {
     border-color: #f7941d;
-
     background: #ffffff;
 }
-
-
-
-   /* Password */
-
 
 .password-wrapper {
     position: relative;
@@ -198,41 +143,27 @@ body.auth-page {
 
 .password-toggle {
     position: absolute;
-
     right: 12px;
     top: 50%;
-
     transform: translateY(-50%);
-
     border: none;
     background: transparent;
-
     cursor: pointer;
-
     font-size: 16px;
 }
-
-
-
-   /* Remember / Forgot */
-
 
 .login-options {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     margin: 5px 0 20px;
-
     font-size: 13px;
 }
 
 .remember-option {
     display: flex;
     align-items: center;
-
     gap: 7px;
-
     cursor: pointer;
 }
 
@@ -242,31 +173,19 @@ body.auth-page {
 
 .forgot-password {
     color: #f7941d;
-
     text-decoration: none;
-
     font-weight: 600;
 }
 
-
-
-   /* Login Button */
-
-
 .login-btn {
     width: 100%;
-
     padding: 14px;
-
     border: none;
     border-radius: 6px;
-
     background: #f7941d;
     color: white;
-
     font-size: 16px;
     font-weight: bold;
-
     cursor: pointer;
 }
 
@@ -275,32 +194,21 @@ body.auth-page {
 }
 
 
-
-   /* Sign Up */
+ /* Login er sign Up part */
 
 
 .signup-link {
     text-align: center;
-
     margin-top: 16px;
-
     color: #666;
-
     font-size: 13px;
 }
 
 .signup-link a {
     color: #f7941d;
-
     text-decoration: none;
-
     font-weight: bold;
 }
-
-
-
-   /* Footer */
-
 
 .footer {
     min-height: 42px;
@@ -318,10 +226,7 @@ body.auth-page {
     font-weight: bold;
 }
 
-
-
-   /* Responsive */
-
+/* Vivonno Screen Er jonno Desgin  */
 
 @media (max-width: 500px) {
 
@@ -342,9 +247,7 @@ body.auth-page {
 .login-message {
     padding: 12px 15px;
     margin-bottom: 18px;
-
     border-radius: 6px;
-
     font-size: 13px;
     text-align: center;
 }

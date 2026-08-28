@@ -6,20 +6,14 @@ body.auth-page {
     flex-direction: column;
 }
 
-/* Top Bar */
-
 .top-bar {
     height: 55px;
     background: #0d192e;
     color: #b9c0cc;
-
     display: flex;
     align-items: center;
-
     padding: 0 20px;
-
     font-size: 14px;
-
     position: relative;
 }
 
@@ -37,7 +31,6 @@ body.auth-page {
 .window-dots span {
     width: 12px;
     height: 12px;
-
     border-radius: 50%;
     background: #e5cf69;
 }
@@ -50,37 +43,25 @@ body.auth-page {
     background: #dc8c98;
 }
 
-
-/* Main Area */
-
 .registration-container {
     flex: 1;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     padding: 40px 20px;
 }
 
 
-/* Registration Card */
+/* Registration Card er Desgin */
 
 .registration-card {
     width: 100%;
     max-width: 580px;
-
     background: white;
-
     border-radius: 17px;
-
     padding: 32px;
-
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
-
-
-/* Branding */
 
 .registration-brand {
     text-align: center;
@@ -103,9 +84,6 @@ body.auth-page {
     font-size: 18px;
 }
 
-
-/* Heading */
-
 .registration-heading {
     text-align: center;
     margin-bottom: 25px;
@@ -122,14 +100,11 @@ body.auth-page {
 }
 
 
-/* Form */
+/*Registartion Form er Desgin */
 
 .form-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
 }
 
@@ -141,22 +116,16 @@ body.auth-page {
 .form-group label {
     font-size: 13px;
     font-weight: bold;
-
     margin-bottom: 7px;
 }
 
 .form-group input {
     width: 100%;
-
     padding: 13px 14px;
-
     border: 1px solid #d9dce1;
     border-radius: 6px;
-
     background: #f4f5f7;
-
     outline: none;
-
     font-size: 14px;
 }
 
@@ -165,25 +134,16 @@ body.auth-page {
     background: white;
 }
 
-
-/* Button */
-
 .create-account-btn {
     width: 100%;
-
     margin-top: 22px;
-
     padding: 14px;
-
     border: none;
     border-radius: 6px;
-
     background: #f7941d;
     color: white;
-
     font-size: 16px;
     font-weight: bold;
-
     cursor: pointer;
 }
 
@@ -191,14 +151,9 @@ body.auth-page {
     opacity: 0.9;
 }
 
-
-/* Login */
-
 .login-link {
     text-align: center;
-
     margin-top: 15px;
-
     font-size: 13px;
     color: #666;
 }
@@ -209,27 +164,21 @@ body.auth-page {
     text-decoration: none;
 }
 
-
-/* Footer */
+/* Screen er Footer  Design */
 
 .footer {
     min-height: 42px;
-
     background: #f7941d;
     color: white;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     padding: 10px;
-
     font-size: 13px;
     font-weight: bold;
 }
 
-
-/* Responsive */
+/* Vivinno screen er jonnoo design*/
 
 @media (max-width: 650px) {
 
@@ -249,9 +198,7 @@ body.auth-page {
 .message {
     padding: 12px 15px;
     margin-bottom: 18px;
-
     border-radius: 6px;
-
     font-size: 13px;
     text-align: center;
 }

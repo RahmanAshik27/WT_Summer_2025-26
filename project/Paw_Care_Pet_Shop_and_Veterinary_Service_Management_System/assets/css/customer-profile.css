@@ -6,257 +6,176 @@
 
 body {
     font-family: Arial, sans-serif;
-
     background: #f4f5f7;
-
     color: #f4f6fa;
 }
 
 .profile-page {
     min-height: 100vh;
-
     display: flex;
     flex-direction: column;
 }
 
-
-/* =========================
-   HEADER
-========================= */
+/*Desgin er Header part */
 
 .profile-header {
     min-height: 70px;
-
     background: #101827;
-
     display: flex;
     align-items: center;
-
     padding: 0 30px;
-
     gap: 35px;
 }
 
 .profile-brand {
     color: #ffad6a;
-
     font-size: 20px;
     font-weight: bold;
 }
 
 .profile-nav {
     display: flex;
-
     align-self: stretch;
-
     gap: 10px;
 }
 
 .profile-nav a {
     display: flex;
     align-items: center;
-
     padding: 0 18px;
-
     color: #c0c6d0;
-
     text-decoration: none;
-
     font-size: 13px;
-
-    border-bottom:
-        2px solid transparent;
+    border-bottom: 2px solid transparent;
 }
 
 .profile-nav a.active {
     color: #ffad6a;
-
-    border-bottom-color:
-        #ffad6a;
+    border-bottom-color:#ffad6a;
 }
 
 .profile-header-right {
     margin-left: auto;
-
     display: flex;
     align-items: center;
-
     gap: 18px;
 }
 
 .profile-search input {
     width: 230px;
-
     padding: 10px 14px;
-
     background: #252c3b;
     color: white;
-
-    border:
-        1px solid #495266;
-
+    border: 1px solid #495266;
     border-radius: 20px;
-
     outline: none;
 }
 
 .header-avatar {
     width: 38px;
     height: 38px;
-
     border-radius: 50%;
-
     background: #f7941d;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     font-weight: bold;
 }
 
-
-/* =========================
-   MAIN CONTENT
-========================= */
+   /* Desgin er main content  */
 
 .profile-content {
     flex: 1;
-
     display: grid;
-
     grid-template-columns: 250px minmax(0, 1fr);
-
     gap: 28px;
-
     padding: 32px 30px;
 }
-
-
-/* =========================
-   LEFT SIDE
-========================= */
 
 .profile-left {
     display: flex;
     flex-direction: column;
-
     gap: 18px;
 }
 
 .profile-card {
     background: #131d2e;
-
     border-radius: 8px;
-
     padding: 25px 18px;
-
     text-align: center;
-
-    box-shadow:
-        0 3px 10px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
 }
 
 .profile-avatar-large {
     width: 90px;
     height: 90px;
-
     margin: 0 auto 18px;
-
     border-radius: 50%;
-
     background: #12bb8b;
-
-    border:
-        4px solid #2e3d55;
-
+    border: 4px solid #2e3d55;
     display: flex;
     align-items: center;
     justify-content: center;
-
     font-size: 32px;
     font-weight: bold;
 }
 
 .profile-card h1 {
     font-size: 18px;
-
     margin-bottom: 6px;
 }
 
 .profile-username {
     color: #929bad;
-
     font-size: 12px;
-
     margin-bottom: 12px;
 }
 
 .customer-badge {
     display: inline-block;
-
     padding: 5px 10px;
-
     background: #f7941d;
     color: #4d2b00;
-
     border-radius: 15px;
-
     font-size: 10px;
     font-weight: bold;
-
     margin-bottom: 20px;
 }
 
 .profile-actions {
     display: flex;
-
     flex-direction: column;
-
     gap: 9px;
 }
 
 .profile-actions button,
 .profile-actions a {
     width: 100%;
-
     padding: 11px;
-
     border-radius: 5px;
-
     font-size: 12px;
     font-weight: bold;
-
     cursor: pointer;
-
     text-decoration: none;
-
     display: block;
-
     text-align: center;
-
     transition: 0.2s;
 }
 
 .edit-profile-btn {
     border: none;
-
     background: #ffb171;
     color: #402000;
 }
 
 .change-password-btn {
-    border:
-        1px solid #70604f;
-
+    border: 1px solid #70604f;
     background: transparent;
     color: #e5e8ed;
 }
 
 .logout-btn {
-    border:
-        1px solid #b4232e;
-
+    border: 1px solid #b4232e;
     background: transparent;
     color: #ef737a;
 }
@@ -264,27 +183,19 @@ body {
 
 .profile-shop-card {
     min-height: 180px;
-
     background: #131d2e;
-
     border-radius: 8px;
-
     display: flex;
-
     flex-direction: column;
-
     justify-content: center;
     align-items: center;
-
     gap: 12px;
 }
 
 .profile-shop-card img {
     width: 80px;
     height: 80px;
-
     object-fit: contain;
-
     border-radius: 50%;
 }
 
@@ -292,67 +203,43 @@ body {
     font-size: 16px;
 }
 
-
-/* =========================
-   RIGHT SIDE
-========================= */
-
 .profile-right {
     width: 100%;
-
     display: flex;
     flex-direction: column;
-
     gap: 28px;
-
     min-width: 0;
 }
 
 .information-panel,
 .recent-orders-panel {
     width: 100%;
-
     background: #131d2e;
-
     border-radius: 8px;
-
     padding: 22px;
-
-    box-shadow:
-        0 3px 10px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
 }
 
 .panel-title {
     color: #d8dde6;
-
     font-size: 14px;
-
     padding-bottom: 15px;
-
-    border-bottom:
-        1px solid #273247;
-
+    border-bottom: 1px solid #273247;
     margin-bottom: 18px;
 }
 .orders-heading .panel-title {
     margin-bottom: 0;
 }
 
-
 .information-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
 }
 
 .info-box {
     display: flex;
-
     flex-direction: column;
-
     gap: 7px;
 }
 
@@ -362,26 +249,17 @@ body {
 
 .info-box label {
     color: #b4bac6;
-
     font-size: 10px;
-
     font-weight: bold;
 }
 
 .info-box div {
     min-height: 42px;
-
     background: #0d1526;
-
-    border:
-        1px solid #273247;
-
+    border: 1px solid #273247;
     border-radius: 6px;
-
     padding: 12px;
-
     color: #dce1e9;
-
     font-size: 12px;
 }
 
@@ -389,62 +267,43 @@ body {
     min-height: 70px;
 }
 
-
-/* =========================
-   ORDERS
-========================= */
+   /* Product Order part er desgin  */
 
 .orders-heading {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     width: 100%;
-
     margin-bottom: 16px;
 }
 
 .orders-heading .panel-title {
     flex: 1;
-
     margin-bottom: 0;
 }
 .orders-heading > a {
     color: #ffad6a;
-
     font-size: 11px;
-
     text-decoration: none;
-
     font-weight: bold;
-
     margin-left: 15px;
-
     white-space: nowrap;
 }
 
 .recent-orders-list {
     width: 100%;
-
     display: flex;
     flex-direction: column;
-
     gap: 12px;
 }
 
 .order-card {
     width: 100%;
-
     min-height: 90px;
-
     background: #0d1526;
-
     border: 1px solid #273247;
-
     border-radius: 6px;
-
     padding: 14px 16px;
-
     display: grid;
 
     grid-template-columns:
@@ -456,22 +315,18 @@ body {
         auto;
 
     align-items: center;
-
     gap: 18px;
 }
 
 .order-field {
     display: flex;
     flex-direction: column;
-
     gap: 5px;
-
     min-width: 0;
 }
 
 .order-field small {
     color: #8f98aa;
-
     font-size: 9px;
 }
 
@@ -485,48 +340,32 @@ body {
 
 .order-status {
     display: inline-block;
-
     width: fit-content;
-
     padding: 4px 7px;
-
     border-radius: 10px;
-
     background: #4c4538;
-
     color: #ffbc77;
-
     font-size: 9px;
 }
 
 .order-methods {
     display: flex;
     flex-direction: column;
-
     gap: 6px;
-
     color: #c3c9d3;
-
     font-size: 10px;
-
     min-width: 0;
 }
 
 .order-details-btn {
     padding: 9px 12px;
-
     background: #333c50;
     color: #f0f2f5;
-
     border-radius: 5px;
-
     text-decoration: none;
-
     font-size: 10px;
     font-weight: bold;
-
     white-space: nowrap;
-
     justify-self: end;
 }
 
@@ -536,54 +375,38 @@ body {
 
 .no-orders {
     padding: 30px;
-
     text-align: center;
-
     color: #8f98aa;
-
     background: #0d1526;
-
     border-radius: 6px;
 }
 
 
-/* =========================
-   FOOTER
-========================= */
+/* screen er Footer Part er desgin */
 
 .profile-footer {
     min-height: 38px;
-
     background: #f7941d;
     color: #68400f;
-
     padding: 8px 25px;
-
     display: flex;
-
     justify-content: space-between;
     align-items: center;
-
     font-size: 9px;
 }
 
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* Screen er size  */
 
 @media (max-width: 1050px) {
 
     .profile-content {
-        grid-template-columns:
-            220px 1fr;
-
+        grid-template-columns: 220px 1fr;
         gap: 20px;
     }
 
     .order-card {
-        grid-template-columns:
-            repeat(3, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -592,21 +415,17 @@ body {
 
     .profile-header {
         flex-wrap: wrap;
-
         padding: 15px;
     }
 
     .profile-header-right {
         width: 100%;
-
         margin-left: 0;
-
         justify-content: center;
     }
 
     .profile-content {
         grid-template-columns: 1fr;
-
         padding: 20px 15px;
     }
 
@@ -625,81 +444,55 @@ body {
 
     .profile-footer {
         flex-direction: column;
-
         gap: 5px;
-
         text-align: center;
     }
 }
 
 .profile-page {
     min-height: 100vh;
-
     display: flex;
     flex-direction: column;
 }.profile-footer {
     margin-top: auto;
 }
 
-/* =========================================
-   FIXED RECENT ORDERS
-========================================= */
+/* Customer er recent order  */
 
 .recent-orders-panel {
     width: 100% !important;
-
     display: block !important;
-
     background: #131d2e;
-
     border-radius: 8px;
-
     padding: 22px;
-
-    box-shadow:
-        0 3px 10px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
 }
-
-
-/* HEADER */
 
 .recent-orders-header {
     width: 100%;
-
     display: flex !important;
-
     flex-direction: row !important;
-
     justify-content: space-between !important;
     align-items: center !important;
-
     padding-bottom: 15px;
     margin-bottom: 16px;
-
     border-bottom: 1px solid #273247;
 }
 
 .recent-orders-header h2 {
     margin: 0;
-
     color: #d8dde6;
-
     font-size: 14px;
     font-weight: normal;
-
     white-space: nowrap;
 }
 
 .recent-orders-header a {
     margin-left: auto;
-
     color: #ffad6a;
-
     font-size: 11px;
     font-weight: bold;
-
     text-decoration: none;
-
     white-space: nowrap;
 }
 
@@ -708,36 +501,26 @@ body {
 }
 
 
-/* ORDER LIST */
+/* Customer Er Order List Er Desgin  */
 
 .recent-orders-list {
     width: 100% !important;
-
     display: flex !important;
-
     flex-direction: column !important;
-
     gap: 12px;
 }
 
 
-/* SINGLE ORDER */
+/* Customer Er Recent Design Part */
 
 .recent-order-card {
     width: 100% !important;
-
     min-height: 88px;
-
     background: #0d1526;
-
     border: 1px solid #273247;
-
     border-radius: 6px;
-
     padding: 14px 16px;
-
     display: grid !important;
-
     grid-template-columns:
         0.7fr
         1fr
@@ -747,110 +530,76 @@ body {
         auto;
 
     align-items: center;
-
     gap: 20px;
 }
 
-
-/* ORDER COLUMN */
+/* Customer er Order col Er Design */
 
 .recent-order-column {
     min-width: 0;
-
     display: flex;
-
     flex-direction: column;
-
     gap: 5px;
 }
 
 .recent-order-label {
     color: #8f98aa;
-
     font-size: 9px;
 }
 
 .recent-order-column strong {
     color: #f0f2f6;
-
     font-size: 11px;
 }
-
-
-/* PRICE */
 
 .recent-order-price {
     color: #ffad6a !important;
 }
 
-
-/* STATUS */
+/* Customer er Recent Order Er Design*/
 
 .recent-order-status {
     width: fit-content;
-
     padding: 4px 8px;
-
     background: #4c4538;
-
     color: #ffbc77;
-
     border-radius: 12px;
-
     font-size: 9px;
 }
 
-
-/* DELIVERY + PAYMENT */
+/* Custpmer er Recent Order ER Desgin */
 
 .recent-order-methods {
     min-width: 0;
-
     display: flex;
-
     flex-direction: column;
-
     gap: 6px;
-
     color: #c3c9d3;
-
     font-size: 10px;
 }
 
 .recent-order-methods span {
     white-space: nowrap;
-
     overflow: hidden;
-
     text-overflow: ellipsis;
 }
 
 
-/* VIEW DETAILS */
+/*Customner Sob Order Details */
 
 .recent-order-details-btn {
     display: inline-flex;
-
     align-items: center;
     justify-content: center;
-
     justify-self: end;
-
     padding: 9px 12px;
-
     background: #333c50;
-
     color: #ffffff;
-
     border-radius: 5px;
-
     text-decoration: none;
-
     font-size: 10px;
     font-weight: bold;
-
     white-space: nowrap;
-
     transition: 0.2s;
 }
 
@@ -858,34 +607,19 @@ body {
     background: #f7941d;
 }
 
-
-/* NO ORDERS */
-
 .no-orders {
     width: 100%;
-
     padding: 30px;
-
     text-align: center;
-
     color: #8f98aa;
-
     background: #0d1526;
-
     border-radius: 6px;
 }
-
-
-/* =========================================
-   RECENT ORDER RESPONSIVE
-========================================= */
 
 @media (max-width: 1200px) {
 
     .recent-order-card {
-        grid-template-columns:
-            repeat(3, minmax(0, 1fr));
-
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         row-gap: 16px;
     }
 
@@ -898,11 +632,9 @@ body {
 @media (max-width: 700px) {
 
     .recent-order-card {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
-
 
 @media (max-width: 500px) {
 
