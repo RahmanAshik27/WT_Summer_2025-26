@@ -6,8 +6,8 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: #f4f5f7;
-    color: #111827;
+    background: #08101f;
+    color: #fff;
 }
 
 .admin-page {
@@ -17,34 +17,34 @@ body {
 }
 
 .top-header {
-    min-height: 155px;
-    background: #101a2c;
-    color: white;
-    padding: 28px 32px;
+    height: 115px;
+    background: #111c2e;
+    border-bottom: 3px solid #1598dc;
+    padding: 20px 25px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
 }
 
 .top-header h1 {
-    font-size: 32px;
-    line-height: 1.05;
-    letter-spacing: 1px;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: 0.5px;
 }
 
 .top-header p {
-    margin-top: 14px;
-    color: #ff7a18;
-    font-size: 15px;
+    margin-top: 12px;
+    color: #ff8a1f;
+    font-size: 14px;
     font-weight: bold;
 }
 
 .header-time {
     color: #25a9e8;
     text-align: right;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
-    line-height: 1.8;
+    line-height: 1.7;
     display: flex;
     flex-direction: column;
 }
@@ -57,28 +57,28 @@ body {
 .sidebar {
     width: 255px;
     background: #202c3d;
-    color: white;
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 195px);
+    border-right: 1px solid #1598dc;
 }
 
 .brand-area {
-    padding: 35px 20px 28px;
+    height: 200px;
+    padding: 32px 20px;
     text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .brand-logo {
-    width: 70px;
-    height: 70px;
+    width: 78px;
+    height: 78px;
     margin: 0 auto 18px;
     border-radius: 50%;
-    background: #ff7417;
+    background: #ff8a24;
     display: flex;
-    align-items: center;
     justify-content: center;
-    font-size: 34px;
+    align-items: center;
+    font-size: 37px;
 }
 
 .brand-area h2 {
@@ -87,126 +87,188 @@ body {
 }
 
 .sidebar-menu {
-    padding: 20px 14px;
+    padding-top: 0;
 }
 
 .sidebar-menu a {
     display: block;
+    padding: 18px 24px;
     color: #aeb7c5;
     text-decoration: none;
-    padding: 15px 14px;
-    margin-bottom: 7px;
-    border-radius: 7px;
     font-size: 14px;
-    transition: 0.2s;
+    border-left: 3px solid transparent;
 }
 
 .sidebar-menu a:hover {
-    background: #273549;
+    background: #29374a;
     color: white;
 }
 
 .sidebar-menu a.active {
-    background: #273549;
+    background: #2b394d;
     color: white;
-}
-
-.sidebar-user {
-    margin-top: auto;
-    padding: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.sidebar-user p {
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.sidebar-user span {
-    display: block;
-    margin: 5px 0 12px;
-    color: #8f9bad;
-    font-size: 12px;
-}
-
-.sidebar-user a {
-    display: inline-block;
-    color: #ff7a18;
-    font-size: 13px;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.sidebar-user a:hover {
-    color: white;
+    border-left-color: #ff8a24;
 }
 
 .main-content {
     flex: 1;
-    background: #f8f8f8;
-    padding: 30px 34px;
+    background: #080e1d;
+    padding: 30px;
 }
 
-.overview-title {
-    margin-bottom: 25px;
+.overview-heading {
+    margin-bottom: 28px;
+}
+
+.overview-heading h2 {
     font-size: 27px;
-    color: #121826;
+    letter-spacing: 0.5px;
 }
 
-.overview-banner {
-    width: 100%;
+.overview-heading p {
+    margin-top: 5px;
+    color: #12dca0;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    height: 125px;
+    padding: 20px;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+}
+
+.stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-top strong {
+    font-size: 27px;
+}
+
+.stat-top span {
+    font-size: 38px;
+    opacity: 0.4;
+}
+
+.stat-card p {
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.7px;
+}
+
+.revenue-card {
+    background: #08bd89;
+}
+
+.orders-card {
+    background: #f18408;
+}
+
+.pets-card {
+    background: #7b22bd;
+}
+
+.stock-card {
+    background: #d8134d;
+}
+
+.activity-panel {
+    border: 1px solid #26364d;
+    border-radius: 7px;
     overflow: hidden;
-    border-radius: 9px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
-    background: white;
+    background: #0d1728;
 }
 
-.overview-banner img {
+.activity-title {
+    padding: 16px 20px;
+    color: #15d6a0;
+    font-size: 13px;
+    font-weight: bold;
+    border-bottom: 1px solid #26364d;
+}
+
+.activity-table {
     width: 100%;
-    height: 610px;
-    display: block;
-    object-fit: cover;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    min-height: 50px;
+    border-bottom: 1px solid #26364d;
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+.table-row span {
+    padding: 16px 20px;
+    color: #c6ced9;
+    font-size: 13px;
+    border-right: 1px solid #26364d;
+}
+
+.table-row span:last-child {
+    border-right: none;
+}
+
+.table-head {
+    background: #202d40;
+}
+
+.table-head span {
+    color: #13d79d;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.table-row:not(.table-head):hover {
+    background: #162747;
+}
+
+.empty-row {
+    padding: 25px;
+    text-align: center;
+    color: #8490a3;
+    font-size: 13px;
 }
 
 .admin-footer {
-    min-height: 42px;
-    background: #ff7417;
-    color: #172033;
+    min-height: 35px;
+    background: #ff8a24;
+    color: #192131;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
-    font-size: 12px;
+    padding: 8px;
+    font-size: 11px;
     font-weight: bold;
-    letter-spacing: 0.4px;
 }
 
-@media (max-width: 900px) {
-    .top-header {
-        min-height: auto;
-        padding: 22px;
-    }
-
-    .top-header h1 {
-        font-size: 26px;
-    }
-
-    .sidebar {
-        width: 210px;
-    }
-
-    .main-content {
-        padding: 24px;
-    }
-
-    .overview-banner img {
-        height: 480px;
+@media (max-width: 1000px) {
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 700px) {
     .top-header {
+        height: auto;
         gap: 20px;
     }
 
@@ -216,18 +278,21 @@ body {
 
     .sidebar {
         width: 100%;
-        min-height: auto;
     }
 
     .brand-area {
-        padding: 22px;
+        height: auto;
     }
 
-    .sidebar-user {
-        margin-top: 0;
+    .stat-grid {
+        grid-template-columns: 1fr;
     }
 
-    .overview-banner img {
-        height: 350px;
+    .table-row {
+        grid-template-columns: repeat(4, minmax(120px, 1fr));
+    }
+
+    .activity-table {
+        overflow-x: auto;
     }
 }
