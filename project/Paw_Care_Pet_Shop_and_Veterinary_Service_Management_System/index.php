@@ -43,14 +43,12 @@ require_once "includes/session.php";
                 </h2>
             </div>
 
-            <nav class="sidebar-menu">
-
                 <nav class="sidebar-menu">
 
                     <a href="login.php" class="menu-btn">Admin Access</a>
                     <a href="login.php" class="menu-btn">Customer Portal</a>
                     <a href="#" class="menu-btn">Pet Reviews</a>
-                    <a href="#" class="menu-btn">Specialist Doctors</a>
+                    <a href="specialist_doctors.php" class="menu-btn">Specialist Doctors</a>
                     <a href="login.php" class="menu-btn">Delivery Man Portal</a>
                     <a href="#" class="menu-btn license-btn">Pet License</a>
 
