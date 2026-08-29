@@ -49,7 +49,7 @@ require_once "includes/session.php";
                     <a href="login.php" class="menu-btn">Customer Portal</a>
                     <a href="#" class="menu-btn">Pet Reviews</a>
                     <a href="specialist_doctors.php" class="menu-btn">Specialist Doctors</a>
-                    <a href="login.php" class="menu-btn">Delivery Man Portal</a>
+                    <a href="delivery/index.php" class="menu-btn">Delivery Man Portal</a>
                     <a href="#" class="menu-btn license-btn">Pet License</a>
 
                 </nav>
