@@ -155,7 +155,7 @@ CREATE TABLE `medical_records` (
 CREATE TABLE `reviews` (
   `review_id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
-  `item_type` enum('pet','product') NOT NULL,
+  `item_type` enum('pet','product','doctor') NOT NULL,
   `item_id` int(11) NOT NULL,
   `rating` int(11) NOT NULL,
   `comment` text DEFAULT NULL,
@@ -219,12 +219,14 @@ ALTER TABLE `medical_records`
 
 ALTER TABLE `reviews`
   ADD PRIMARY KEY (`review_id`),
-  ADD KEY `customer_id` (`customer_id`);
+  ADD KEY `customer_id` (`customer_id`),
+  ADD KEY `review_item` (`item_type`,`item_id`),
+  ADD CONSTRAINT `reviews_rating_check` CHECK (`rating` BETWEEN 1 AND 5);
 
 -- AUTO_INCREMENT
 
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 ALTER TABLE `pet_categories`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
@@ -233,7 +235,7 @@ ALTER TABLE `product_categories`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 ALTER TABLE `doctors`
-  MODIFY `doctor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `doctor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 ALTER TABLE `pets`
   MODIFY `pet_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;

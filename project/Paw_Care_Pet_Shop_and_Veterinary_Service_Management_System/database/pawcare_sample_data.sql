@@ -27,11 +27,13 @@ INSERT INTO `users` (`user_id`, `full_name`, `username`, `email`, `phone`, `gend
 (1, 'PawCare Administrator', 'admin', 'admin@pawcare.com', '01700000001', 'Male', '$2y$10$sMylywzYjH6pof2HfyhPIeR/sMjmsgYDC.5.5yxUs4OnakqNdH9ai', 'admin', 'default.png', 'Dhaka, Bangladesh', 'active', '2026-08-26 13:41:45', '2026-08-28 02:59:59'),
 (2, 'Rahim Ahmed', 'rahim_ahmed', 'customer1@pawcare.com', '01700000002', 'Male', '$2y$12$lge9fOoK6rs6fHNX3.2vPOQPtWiELXk5VlBFTvwumScFYc.DDvevW', 'customer', 'default.png', 'Mirpur, Dhaka', 'active', '2026-08-26 13:41:45', '2026-08-26 13:41:45'),
 (3, 'Sadia Islam', 'sadia_islam', 'customer2@pawcare.com', '01700000003', 'Female', '$2y$12$lge9fOoK6rs6fHNX3.2vPOQPtWiELXk5VlBFTvwumScFYc.DDvevW', 'customer', 'default.png', 'Uttara, Dhaka', 'active', '2026-08-26 13:41:45', '2026-08-26 13:41:45'),
-(4, 'Dr. Hasan Rahman', 'dr_hasan', 'doctor1@pawcare.com', '01700000004', 'Male', '$2y$12$oCi9cf6OD5VZQ3PSLTazseYX.VnAhKTWlTpVeqYzjNa/AzxmhRw0u', 'doctor', 'default.png', 'Dhanmondi, Dhaka', 'active', '2026-08-26 13:41:45', '2026-08-26 13:41:45'),
-(5, 'Dr. Nusrat Jahan', 'dr_nusrat', 'doctor2@pawcare.com', '01700000005', 'Female', '$2y$12$oCi9cf6OD5VZQ3PSLTazseYX.VnAhKTWlTpVeqYzjNa/AzxmhRw0u', 'doctor', 'default.png', 'Banani, Dhaka', 'active', '2026-08-26 13:41:45', '2026-08-26 13:41:45'),
+(4, 'Md. Ashikur Rahman Mirza', 'ashik', 'ashik.doctor@pawcare.com', '01710000004', 'Male', '$2y$12$xzs6ypfh98akrIT0wIdTCu6eW3gGmWI7/DCkdgmG412J3VMHnFQya', 'doctor', 'default.png', 'Dhaka, Bangladesh', 'active', '2026-08-29 10:00:00', '2026-08-29 10:00:00'),
+(5, 'Md. Mostafizur Rahman', 'mustafiz', 'mustafiz.doctor@pawcare.com', '01710000005', 'Male', '$2y$12$xzs6ypfh98akrIT0wIdTCu6eW3gGmWI7/DCkdgmG412J3VMHnFQya', 'doctor', 'default.png', 'Dhaka, Bangladesh', 'active', '2026-08-29 10:00:00', '2026-08-29 10:00:00'),
+(9, 'Shahed Bhuiyan Rony', 'roni', 'roni.doctor@pawcare.com', '01710000009', 'Male', '$2y$12$xzs6ypfh98akrIT0wIdTCu6eW3gGmWI7/DCkdgmG412J3VMHnFQya', 'doctor', 'default.png', 'Dhaka, Bangladesh', 'active', '2026-08-29 10:00:00', '2026-08-29 10:00:00'),
+(10, 'Shajia Afrin', 'shajia', 'shajia.doctor@pawcare.com', '01710000010', 'Female', '$2y$12$xzs6ypfh98akrIT0wIdTCu6eW3gGmWI7/DCkdgmG412J3VMHnFQya', 'doctor', 'default.png', 'Dhaka, Bangladesh', 'active', '2026-08-29 10:00:00', '2026-08-29 10:00:00'),
 (6, 'Karim Uddin', 'karim_delivery', 'delivery1@pawcare.com', '01700000006', 'Male', '$2y$12$LrXYTJWyMWjG4L.jwHWlOOO3CrWD2Vp/0x5zjSvAy.xjQ/9HKsgaa', 'delivery', 'default.png', 'Mohammadpur, Dhaka', 'active', '2026-08-26 13:41:45', '2026-08-26 13:41:45'),
 (7, 'Rafi Ahmed', 'rafi_delivery', 'delivery2@pawcare.com', '01700000007', 'Male', '$2y$12$LrXYTJWyMWjG4L.jwHWlOOO3CrWD2Vp/0x5zjSvAy.xjQ/9HKsgaa', 'delivery', 'default.png', 'Badda, Dhaka', 'active', '2026-08-26 13:41:45', '2026-08-26 13:41:45'),
-(8, 'ashikur Rahman Emon', 'ashik', 'ashikikurRahmanEMon@gmail.com', '01626318821', NULL, '$2y$10$rJA2fYkjlWZNhwHCScIDUOgxIU92so8BW24.dI3tt13nP/CY6DowW', 'customer', 'default.png', 'Ashkona Uttara dhaka 1230', 'active', '2026-08-26 14:37:32', '2026-08-28 02:11:30');
+(8, 'ashikur Rahman Emon', 'emon_customer', 'ashikikurRahmanEMon@gmail.com', '01626318821', NULL, '$2y$10$rJA2fYkjlWZNhwHCScIDUOgxIU92so8BW24.dI3tt13nP/CY6DowW', 'customer', 'default.png', 'Ashkona Uttara dhaka 1230', 'active', '2026-08-26 14:37:32', '2026-08-28 02:11:30');
 
 -- pet_categories
 INSERT INTO `pet_categories` (`category_id`, `category_name`, `description`, `created_at`) VALUES
@@ -51,8 +53,10 @@ INSERT INTO `product_categories` (`category_id`, `category_name`, `description`,
 
 -- doctors
 INSERT INTO `doctors` (`doctor_id`, `user_id`, `specialization`, `qualification`, `experience_years`, `consultation_fee`, `available_days`, `available_time`, `bio`, `status`, `created_at`, `updated_at`) VALUES
-(1, 4, 'Small Animal Medicine', 'DVM', 5, 800.00, 'Sunday, Tuesday, Thursday', '10:00 AM - 4:00 PM', 'Experienced veterinarian specializing in dogs, cats and small animals.', 'Available', '2026-08-26 13:41:45', '2026-08-26 13:41:45'),
-(2, 5, 'Pet Surgery and General Care', 'DVM, MS in Veterinary Surgery', 7, 1000.00, 'Monday, Wednesday, Saturday', '11:00 AM - 5:00 PM', 'Veterinary doctor experienced in general treatment and minor pet surgery.', 'Available', '2026-08-26 13:41:45', '2026-08-26 13:41:45');
+(1, 4, 'Small Animal Medicine', 'DVM', 5, 800.00, 'Sunday, Tuesday, Thursday', '10:00 AM - 4:00 PM', 'Veterinary specialist experienced in general care of dogs, cats and small animals.', 'Available', '2026-08-29 10:00:00', '2026-08-29 10:00:00'),
+(2, 5, 'Pet Surgery and General Care', 'DVM, MS in Veterinary Surgery', 7, 1000.00, 'Monday, Wednesday, Saturday', '11:00 AM - 5:00 PM', 'Veterinary specialist experienced in general treatment and minor pet surgery.', 'Available', '2026-08-29 10:00:00', '2026-08-29 10:00:00'),
+(3, 9, 'Pet Medicine and Vaccination', 'DVM', 4, 750.00, 'Sunday, Monday, Wednesday', '9:00 AM - 2:00 PM', 'Veterinary specialist focused on pet medicine, vaccination and routine health care.', 'Available', '2026-08-29 10:00:00', '2026-08-29 10:00:00'),
+(4, 10, 'Pet Nutrition and General Care', 'DVM', 4, 750.00, 'Tuesday, Thursday, Saturday', '12:00 PM - 6:00 PM', 'Veterinary specialist focused on nutrition, preventive care and general pet health.', 'Available', '2026-08-29 10:00:00', '2026-08-29 10:00:00');
 
 -- pets
 INSERT INTO `pets` (`pet_id`, `category_id`, `pet_name`, `breed`, `age`, `gender`, `color`, `weight`, `price`, `stock`, `health_status`, `vaccination_status`, `image`, `description`, `status`, `created_at`) VALUES
@@ -156,16 +160,44 @@ INSERT INTO `deliveries` (`delivery_id`, `order_id`, `delivery_agent_id`, `deliv
 -- appointments
 INSERT INTO `appointments` (`appointment_id`, `customer_id`, `doctor_id`, `pet_name`, `pet_type`, `appointment_date`, `appointment_time`, `reason`, `status`, `created_at`) VALUES
 (1, 2, 1, 'Bruno', 'Dog', '2026-08-30', '10:30:00', 'Routine health examination', 'Completed', '2026-08-26 13:41:45'),
-(2, 3, 2, 'Milo', 'Cat', '2026-09-02', '12:00:00', 'Low appetite and weakness', 'Confirmed', '2026-08-26 13:41:45');
+(2, 3, 2, 'Milo', 'Cat', '2026-09-02', '12:00:00', 'Low appetite and weakness', 'Confirmed', '2026-08-26 13:41:45'),
+(3, 8, 3, 'Miki', 'Cat', '2026-08-25', '11:00:00', 'Vaccination and general checkup', 'Completed', '2026-08-24 15:20:00'),
+(4, 2, 4, 'Rocky', 'Dog', '2026-08-27', '13:30:00', 'Diet and skin care consultation', 'Completed', '2026-08-26 09:15:00');
 
 -- medical_records
 INSERT INTO `medical_records` (`record_id`, `appointment_id`, `diagnosis`, `prescription`, `treatment_notes`, `next_visit_date`, `created_at`) VALUES
-(1, 1, 'Healthy', 'No medicine required', 'Maintain proper diet, vaccination schedule and regular exercise.', '2026-09-30', '2026-08-26 13:41:45');
+(1, 1, 'Healthy', 'No medicine required', 'Maintain proper diet, vaccination schedule and regular exercise.', '2026-09-30', '2026-08-26 13:41:45'),
+(2, 3, 'Routine vaccination completed', 'Vitamin supplement if needed', 'Vaccination completed. Continue regular feeding and care.', '2026-11-25', '2026-08-25 11:30:00'),
+(3, 4, 'Mild skin irritation', 'Pet-safe skin ointment', 'Keep the skin clean and monitor food sensitivity.', '2026-09-10', '2026-08-27 14:00:00');
 
 -- reviews
 INSERT INTO `reviews` (`review_id`, `customer_id`, `item_type`, `item_id`, `rating`, `comment`, `status`, `created_at`) VALUES
 (1, 2, 'product', 1, 5, 'Good quality food and fast service.', 'Visible', '2026-08-26 13:41:45'),
 (2, 3, 'pet', 3, 5, 'The Persian cat was healthy and well cared for.', 'Visible', '2026-08-26 13:41:45');
+
+INSERT INTO `reviews` (`customer_id`, `item_type`, `item_id`, `rating`, `comment`, `status`) VALUES
+(2, 'pet', 1, 4, 'Very active and healthy pet. Really satisfied with the service.', 'Visible'),
+(3, 'pet', 2, 5, 'Beautiful pet and very well maintained by PawCare.', 'Visible'),
+(2, 'pet', 3, 5, 'Amazing Persian cat. Healthy, fluffy and friendly.', 'Visible'),
+(3, 'pet', 4, 4, 'Good health condition and exactly as described.', 'Visible'),
+(2, 'pet', 5, 5, 'One of the best pets I have purchased from PawCare.', 'Visible'),
+(3, 'pet', 6, 4, 'Cute and playful pet. Very happy with the purchase.', 'Visible'),
+(2, 'pet', 7, 3, 'Good pet but delivery took a little longer than expected.', 'Visible'),
+(3, 'product', 1, 5, 'Excellent quality food. My pet really likes it.', 'Visible'),
+(2, 'product', 2, 4, 'Good quality product and reasonable price.', 'Visible'),
+(3, 'product', 3, 5, 'Very useful product and fast delivery service.', 'Visible'),
+(2, 'product', 4, 4, 'Good product. Packaging was also very nice.', 'Visible'),
+(3, 'product', 5, 5, 'Excellent product quality. Highly recommended.', 'Visible'),
+(2, 'product', 6, 3, 'Product is good but packaging could be better.', 'Visible'),
+(3, 'product', 7, 4, 'Satisfied with the product and PawCare service.', 'Visible'),
+(2, 'product', 8, 5, 'Very useful for my pet. I will definitely buy again.', 'Visible');
+
+-- doctor reviews
+INSERT INTO `reviews` (`customer_id`, `item_type`, `item_id`, `rating`, `comment`, `status`) VALUES
+(2, 'doctor', 1, 5, 'Very caring doctor and explained the treatment clearly.', 'Visible'),
+(3, 'doctor', 2, 5, 'Good consultation and friendly behavior with my pet.', 'Visible'),
+(8, 'doctor', 3, 4, 'Helpful vaccination advice and good service.', 'Visible'),
+(2, 'doctor', 4, 5, 'Very helpful guidance about pet diet and skin care.', 'Visible');
 
 -- Make sample orders useful for admin dashboard and sales analytics
 UPDATE `orders` SET `payment_status` = 'Paid', `order_status` = 'Delivered' WHERE `order_id` IN (1, 2, 3, 4, 5, 6);
@@ -175,3 +207,9 @@ UPDATE `orders` SET `payment_status` = 'Pending', `order_status` = 'Cancelled' W
 
 -- Keep delivery records consistent where possible
 UPDATE `deliveries` SET `delivery_status` = 'Delivered' WHERE `order_id` IN (1, 2, 3, 4, 5, 6);
+
+
+UPDATE users SET profile_image = 'ashik.jpg' WHERE username = 'ashik';
+UPDATE users SET profile_image = 'mustafiz.jpg' WHERE username = 'mustafiz';
+UPDATE users SET profile_image = 'roni.jpg' WHERE username = 'roni';
+UPDATE users SET profile_image = 'Shajia.jpg' WHERE username = 'shajia';
