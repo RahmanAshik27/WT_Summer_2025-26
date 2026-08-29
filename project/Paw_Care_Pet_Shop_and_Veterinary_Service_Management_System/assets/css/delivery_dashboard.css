@@ -235,6 +235,27 @@ td {
     color: #748196;
 }
 
+.action-btn {
+    border: none;
+    background: #f7941d;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background: #db7d12;
+}
+
+.completed-text {
+    color: #62c78f;
+    font-size: 11px;
+    font-weight: bold;
+}
+
 .delivery-footer {
     height: 42px;
     background: #f7941d;
