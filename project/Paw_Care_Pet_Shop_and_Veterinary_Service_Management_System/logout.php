@@ -1,6 +1,7 @@
 <?php
 
-session_start();
+require_once "includes/session.php";
+
 
 $_SESSION = [];
 
@@ -18,8 +19,11 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
+// Destroy session
 session_destroy();
 
-
-header("Location: login.php?logout=1");
+// Go back to main home page
+header("Location: index.php");
 exit;
+
+?>
