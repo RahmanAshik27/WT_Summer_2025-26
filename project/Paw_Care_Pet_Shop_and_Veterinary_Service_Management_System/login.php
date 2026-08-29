@@ -44,6 +44,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     setcookie("remember_login", "", time() - 3600, "/");
                 }
 
+                if ($user["role"] === "customer" && ($_SESSION["redirect_after_login"] ?? "") === "confirm_appointment.php") {
+                    unset($_SESSION["redirect_after_login"]);
+                    header("Location: confirm_appointment.php");
+                    exit;
+                }
                 switch ($user["role"]) {
                     case "admin":
                         header("Location: admin/dashboard.php");
