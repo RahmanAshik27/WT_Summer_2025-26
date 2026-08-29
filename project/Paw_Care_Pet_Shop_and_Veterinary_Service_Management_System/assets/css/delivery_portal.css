@@ -1,0 +1,130 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #101827;
+    color: #ffffff;
+}
+
+.delivery-page {
+    min-height: 100vh;
+    padding: 50px 30px;
+    box-sizing: border-box;
+}
+
+.portal-header {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.portal-header h1 {
+    margin: 0 0 10px;
+    font-size: 38px;
+    color: #f7941d;
+}
+
+.portal-header p {
+    margin: 0;
+    color: #aeb8c7;
+    font-size: 16px;
+}
+
+.company-container {
+    max-width: 1150px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.company-card {
+    background: #172235;
+    border: 1px solid #2b3a50;
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.company-card:hover {
+    transform: translateY(-5px);
+    transition: 0.3s;
+}
+
+.company-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #24344d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+.company-card h2 {
+    margin: 0 0 12px;
+    font-size: 21px;
+}
+
+.agent-name {
+    color: #aeb8c7;
+    font-size: 14px;
+    min-height: 34px;
+}
+
+.order-count {
+    margin: 25px 0;
+}
+
+.order-count span {
+    display: block;
+    font-size: 32px;
+    font-weight: bold;
+    color: #f7941d;
+}
+
+.order-count p {
+    margin: 5px 0 0;
+    color: #aeb8c7;
+    font-size: 13px;
+}
+
+.login-btn {
+    display: block;
+    background: #f7941d;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 11px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.login-btn:hover {
+    background: #db7d12;
+}
+
+.back-home {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.back-home a {
+    color: #aeb8c7;
+    text-decoration: none;
+}
+
+.back-home a:hover {
+    color: #f7941d;
+}
+
+@media (max-width: 1000px) {
+    .company-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .company-container {
+        grid-template-columns: 1fr;
+    }
+}
