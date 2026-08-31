@@ -340,3 +340,34 @@ td {
         width: 100%;
     }
 }
+.filter-btn,
+.reset-btn {
+    border: none;
+    padding: 11px 16px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.filter-btn {
+    background: #f7941d;
+    color: #ffffff;
+}
+
+.filter-btn:hover {
+    background: #dc7e13;
+}
+
+.reset-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2b374b;
+    color: #c6cfdb;
+}
+
+.reset-btn:hover {
+    background: #37465e;
+}

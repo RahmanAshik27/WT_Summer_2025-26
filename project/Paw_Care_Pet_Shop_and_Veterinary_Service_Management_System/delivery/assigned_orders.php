@@ -26,10 +26,46 @@ if (!$agent) {
 $agent_name = $agent["full_name"];
 $company_name = $agent["company_name"];
 
-$order_sql = "SELECT d.delivery_id, d.delivery_status, d.assigned_at, d.delivery_note, o.order_id, o.total_amount, o.delivery_address, o.order_status, o.payment_method, o.payment_status, o.order_date, u.full_name AS customer_name, u.phone AS customer_phone FROM deliveries d JOIN orders o ON d.order_id = o.order_id JOIN users u ON o.customer_id = u.user_id WHERE d.delivery_agent_id = ? AND o.delivery_method = ? ORDER BY d.assigned_at DESC";
+$search = trim($_GET["search"] ?? "");
+$status = trim($_GET["status"] ?? "");
+
+$allowed_status = [
+    "Assigned",
+    "Out for Delivery",
+    "Delivered",
+    "Failed",
+    "Cancelled"
+];
+
+if ($status !== "" && !in_array($status, $allowed_status)) {
+    $status = "";
+}
+
+$order_sql = "SELECT d.delivery_id, d.delivery_status, d.assigned_at, d.delivery_note, o.order_id, o.total_amount, o.delivery_address, o.order_status, o.payment_method, o.payment_status, o.order_date, u.full_name AS customer_name, u.phone AS customer_phone FROM deliveries d JOIN orders o ON d.order_id = o.order_id JOIN users u ON o.customer_id = u.user_id WHERE d.delivery_agent_id = ? AND o.delivery_method = ?";
+
+$params = [$user_id, $company_name];
+$types = "is";
+
+if ($search !== "") {
+    $order_sql .= " AND (CAST(o.order_id AS CHAR) LIKE ? OR u.full_name LIKE ?)";
+    $search_value = "%" . ltrim($search, "#") . "%";
+    $customer_search = "%" . $search . "%";
+
+    $params[] = $search_value;
+    $params[] = $customer_search;
+    $types .= "ss";
+}
+
+if ($status !== "") {
+    $order_sql .= " AND d.delivery_status = ?";
+    $params[] = $status;
+    $types .= "s";
+}
+
+$order_sql .= " ORDER BY d.assigned_at DESC";
 
 $order_stmt = mysqli_prepare($conn, $order_sql);
-mysqli_stmt_bind_param($order_stmt, "is", $user_id, $company_name);
+mysqli_stmt_bind_param($order_stmt, $types, ...$params);
 mysqli_stmt_execute($order_stmt);
 
 $order_result = mysqli_stmt_get_result($order_stmt);
@@ -141,15 +177,52 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 
             </div>
 
-            <div class="filter-box">
+            <form method="GET" action="assigned_orders.php" class="filter-box">
 
-                <input type="text" placeholder="Search Order ID / Customer..." disabled>
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search Order ID / Customer..."
+                    value="<?php echo htmlspecialchars($search); ?>"
+                >
 
-                <select disabled>
-                    <option>All Statuses</option>
+                <select name="status">
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    <option value="Assigned" <?php if ($status === "Assigned") echo "selected"; ?>>
+                        Assigned
+                    </option>
+
+                    <option value="Out for Delivery" <?php if ($status === "Out for Delivery") echo "selected"; ?>>
+                        Out for Delivery
+                    </option>
+
+                    <option value="Delivered" <?php if ($status === "Delivered") echo "selected"; ?>>
+                        Delivered
+                    </option>
+
+                    <option value="Failed" <?php if ($status === "Failed") echo "selected"; ?>>
+                        Failed
+                    </option>
+
+                    <option value="Cancelled" <?php if ($status === "Cancelled") echo "selected"; ?>>
+                        Cancelled
+                    </option>
+
                 </select>
 
-            </div>
+                <button type="submit" class="filter-btn">
+                    SEARCH
+                </button>
+
+                <a href="assigned_orders.php" class="reset-btn">
+                    RESET
+                </a>
+
+            </form>
 
             <section class="orders-panel">
 
@@ -291,7 +364,17 @@ $order_result = mysqli_stmt_get_result($order_stmt);
                             <tr>
 
                                 <td colspan="6" class="empty-data">
-                                    No assigned orders found.
+
+                                    <?php if ($search !== "" || $status !== ""): ?>
+
+                                        No matching orders found.
+
+                                    <?php else: ?>
+
+                                        No assigned orders found.
+
+                                    <?php endif; ?>
+
                                 </td>
 
                             </tr>
