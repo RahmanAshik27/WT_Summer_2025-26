@@ -9,6 +9,8 @@ if (!isset($_SESSION["user_id"]) || ($_SESSION["role"] ?? "") !== "delivery") {
 }
 
 $user_id = $_SESSION["user_id"];
+$message = "";
+$message_type = "";
 
 $profile_sql = "SELECT u.full_name, u.username, u.email, u.phone, u.gender, u.address, u.role, u.profile_image, u.status, da.company_name, da.status AS agent_status FROM users u JOIN delivery_agents da ON u.user_id = da.user_id WHERE u.user_id = ? LIMIT 1";
 $profile_stmt = mysqli_prepare($conn, $profile_sql);
@@ -23,8 +25,42 @@ if (!$profile) {
     exit;
 }
 
-$agent_name = $profile["full_name"];
 $company_name = $profile["company_name"];
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["save_profile"])) {
+
+    $full_name = trim($_POST["full_name"] ?? "");
+    $phone = trim($_POST["phone"] ?? "");
+    $address = trim($_POST["address"] ?? "");
+
+    if ($full_name === "" || $phone === "" || $address === "") {
+        $message = "Full name, phone number and address are required.";
+        $message_type = "error";
+    } else {
+
+        $update_sql = "UPDATE users SET full_name = ?, phone = ?, address = ? WHERE user_id = ? AND role = 'delivery'";
+        $update_stmt = mysqli_prepare($conn, $update_sql);
+        mysqli_stmt_bind_param($update_stmt, "sssi", $full_name, $phone, $address, $user_id);
+
+        if (mysqli_stmt_execute($update_stmt)) {
+
+            $_SESSION["full_name"] = $full_name;
+
+            $message = "Profile updated successfully.";
+            $message_type = "success";
+
+            $profile["full_name"] = $full_name;
+            $profile["phone"] = $phone;
+            $profile["address"] = $address;
+
+        } else {
+            $message = "Profile update failed. Please try again.";
+            $message_type = "error";
+        }
+    }
+}
+
+$agent_name = $profile["full_name"];
 
 ?>
 
@@ -57,11 +93,8 @@ $company_name = $profile["company_name"];
         <nav class="sidebar-menu">
 
             <a href="dashboard.php">Dashboard</a>
-
             <a href="assigned_orders.php">Assigned Orders</a>
-
             <a href="history.php">History</a>
-
             <a href="profile.php" class="active">Profile Settings</a>
 
         </nav>
@@ -104,7 +137,7 @@ $company_name = $profile["company_name"];
                     <h1>Profile Settings</h1>
 
                     <p>
-                        View your account and delivery company information.
+                        View and update your personal information.
                     </p>
 
                 </div>
@@ -114,6 +147,14 @@ $company_name = $profile["company_name"];
                 </div>
 
             </div>
+
+            <?php if ($message !== ""): ?>
+
+                <div class="<?php echo $message_type === "success" ? "success-message" : "error-message"; ?>">
+                    <?php echo htmlspecialchars($message); ?>
+                </div>
+
+            <?php endif; ?>
 
             <div class="profile-container">
 
@@ -193,96 +234,98 @@ $company_name = $profile["company_name"];
 
                             <h2>Personal Information</h2>
 
-                            <p>Your registered PawCare account details.</p>
+                            <p>Update your PawCare delivery profile.</p>
 
                         </div>
 
                         <span class="view-label">
-                            PROFILE
+                            EDIT PROFILE
                         </span>
 
                     </div>
 
-                    <div class="details-grid">
+                    <form method="POST" action="profile.php">
 
-                        <div class="detail-box">
+                        <div class="details-grid">
 
-                            <label>Full Name</label>
+                            <div class="detail-box">
 
-                            <div class="detail-value">
-                                <?php echo htmlspecialchars($profile["full_name"]); ?>
+                                <label>Full Name</label>
+
+                                <input type="text" name="full_name" value="<?php echo htmlspecialchars($profile["full_name"]); ?>" required>
+
+                            </div>
+
+                            <div class="detail-box">
+
+                                <label>Username</label>
+
+                                <input type="text" value="<?php echo htmlspecialchars($profile["username"]); ?>" disabled>
+
+                            </div>
+
+                            <div class="detail-box">
+
+                                <label>Email Address</label>
+
+                                <input type="email" value="<?php echo htmlspecialchars($profile["email"]); ?>" disabled>
+
+                            </div>
+
+                            <div class="detail-box">
+
+                                <label>Phone Number</label>
+
+                                <input type="text" name="phone" value="<?php echo htmlspecialchars($profile["phone"] ?? ""); ?>" required>
+
+                            </div>
+
+                            <div class="detail-box">
+
+                                <label>Gender</label>
+
+                                <input type="text" value="<?php echo htmlspecialchars($profile["gender"] ?: "Not provided"); ?>" disabled>
+
+                            </div>
+
+                            <div class="detail-box">
+
+                                <label>Delivery Company</label>
+
+                                <input type="text" value="<?php echo htmlspecialchars($company_name); ?>" disabled>
+
+                            </div>
+
+                            <div class="detail-box full-width">
+
+                                <label>Address</label>
+
+                                <textarea name="address" rows="4" required><?php echo htmlspecialchars($profile["address"] ?? ""); ?></textarea>
+
                             </div>
 
                         </div>
 
-                        <div class="detail-box">
+                        <div class="profile-actions">
 
-                            <label>Username</label>
+                            <button type="submit" name="save_profile" class="save-btn">
+                                SAVE CHANGES
+                            </button>
 
-                            <div class="detail-value">
-                                <?php echo htmlspecialchars($profile["username"]); ?>
-                            </div>
-
-                        </div>
-
-                        <div class="detail-box">
-
-                            <label>Email Address</label>
-
-                            <div class="detail-value">
-                                <?php echo htmlspecialchars($profile["email"]); ?>
-                            </div>
+                            <a href="profile.php" class="cancel-btn">
+                                CANCEL
+                            </a>
 
                         </div>
 
-                        <div class="detail-box">
-
-                            <label>Phone Number</label>
-
-                            <div class="detail-value">
-                                <?php echo htmlspecialchars($profile["phone"] ?: "Not provided"); ?>
-                            </div>
-
-                        </div>
-
-                        <div class="detail-box">
-
-                            <label>Gender</label>
-
-                            <div class="detail-value">
-                                <?php echo htmlspecialchars($profile["gender"] ?: "Not provided"); ?>
-                            </div>
-
-                        </div>
-
-                        <div class="detail-box">
-
-                            <label>Delivery Company</label>
-
-                            <div class="detail-value">
-                                <?php echo htmlspecialchars($company_name); ?>
-                            </div>
-
-                        </div>
-
-                        <div class="detail-box full-width">
-
-                            <label>Address</label>
-
-                            <div class="detail-value address-value">
-                                <?php echo htmlspecialchars($profile["address"] ?: "Not provided"); ?>
-                            </div>
-
-                        </div>
-
-                    </div>
+                    </form>
 
                     <div class="profile-note">
 
                         <strong>Account Information</strong>
 
                         <p>
-                            Your username, role and delivery company are managed by PawCare administration.
+                            Username, email, gender, role and delivery company cannot be changed from this page.
                         </p>
 
                     </div>
