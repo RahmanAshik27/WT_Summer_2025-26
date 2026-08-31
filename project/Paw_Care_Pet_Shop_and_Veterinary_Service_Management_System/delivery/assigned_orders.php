@@ -447,7 +447,9 @@ $order_result = mysqli_stmt_get_result($order_stmt);
                                     </td>
 
                                     <td>
-
+                                        <a href="order_details.php?id=<?php echo (int)$order["delivery_id"]; ?>" class="details-btn">
+                                                VIEW DETAILS
+                                            </a>
                                         <?php if ($order["delivery_status"] === "Assigned"): ?>
 
                                             <form method="POST" action="assigned_orders.php" class="action-form">
