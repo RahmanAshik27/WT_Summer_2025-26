@@ -371,3 +371,27 @@ td {
 .reset-btn:hover {
     background: #37465e;
 }
+
+.action-form {
+    margin: 0;
+}
+
+.success-message,
+.error-message {
+    margin-top: 20px;
+    padding: 12px 15px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.success-message {
+    background: #18392d;
+    border: 1px solid #2f6e54;
+    color: #61d79a;
+}
+
+.error-message {
+    background: #47282b;
+    border: 1px solid #754047;
+    color: #ff8c8c;
+}

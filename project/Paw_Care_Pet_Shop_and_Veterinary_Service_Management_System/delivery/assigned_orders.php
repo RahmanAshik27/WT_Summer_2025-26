@@ -26,6 +26,65 @@ if (!$agent) {
 $agent_name = $agent["full_name"];
 $company_name = $agent["company_name"];
 
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["start_delivery"])) {
+
+    $delivery_id = (int)($_POST["delivery_id"] ?? 0);
+
+    if ($delivery_id > 0) {
+
+        $check_sql = "SELECT d.delivery_id, d.order_id FROM deliveries d JOIN orders o ON d.order_id = o.order_id WHERE d.delivery_id = ? AND d.delivery_agent_id = ? AND o.delivery_method = ? AND d.delivery_status = 'Assigned' LIMIT 1";
+        $check_stmt = mysqli_prepare($conn, $check_sql);
+        mysqli_stmt_bind_param($check_stmt, "iis", $delivery_id, $user_id, $company_name);
+        mysqli_stmt_execute($check_stmt);
+
+        $check_result = mysqli_stmt_get_result($check_stmt);
+        $delivery = mysqli_fetch_assoc($check_result);
+
+        if ($delivery) {
+
+            $order_id = $delivery["order_id"];
+
+            mysqli_begin_transaction($conn);
+
+            try {
+
+                $delivery_sql = "UPDATE deliveries SET delivery_status = 'Out for Delivery' WHERE delivery_id = ? AND delivery_agent_id = ?";
+                $delivery_stmt = mysqli_prepare($conn, $delivery_sql);
+                mysqli_stmt_bind_param($delivery_stmt, "ii", $delivery_id, $user_id);
+
+                if (!mysqli_stmt_execute($delivery_stmt)) {
+                    throw new Exception("Delivery update failed.");
+                }
+
+                $order_update_sql = "UPDATE orders SET order_status = 'Shipped' WHERE order_id = ? AND delivery_method = ?";
+                $order_update_stmt = mysqli_prepare($conn, $order_update_sql);
+                mysqli_stmt_bind_param($order_update_stmt, "is", $order_id, $company_name);
+
+                if (!mysqli_stmt_execute($order_update_stmt)) {
+                    throw new Exception("Order update failed.");
+                }
+
+                mysqli_commit($conn);
+
+                header("Location: assigned_orders.php?message=started");
+                exit;
+
+            } catch (Exception $e) {
+
+                mysqli_rollback($conn);
+
+                header("Location: assigned_orders.php?message=error");
+                exit;
+            }
+        }
+    }
+
+    header("Location: assigned_orders.php?message=invalid");
+    exit;
+}
+
+$message = $_GET["message"] ?? "";
+
 $search = trim($_GET["search"] ?? "");
 $status = trim($_GET["status"] ?? "");
 
@@ -94,9 +153,7 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 
             <h2>PAWCARE</h2>
 
-            <p>
-                <?php echo htmlspecialchars($company_name); ?>
-            </p>
+            <p><?php echo htmlspecialchars($company_name); ?></p>
 
         </div>
 
@@ -161,9 +218,7 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 
                 <div>
 
-                    <h1>
-                        Assigned Orders
-                    </h1>
+                    <h1>Assigned Orders</h1>
 
                     <p>
                         Manage and update your assigned deliveries.
@@ -177,14 +232,29 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 
             </div>
 
+            <?php if ($message === "started"): ?>
+
+                <div class="success-message">
+                    Delivery started successfully.
+                </div>
+
+            <?php elseif ($message === "error"): ?>
+
+                <div class="error-message">
+                    Something went wrong. Please try again.
+                </div>
+
+            <?php elseif ($message === "invalid"): ?>
+
+                <div class="error-message">
+                    Invalid delivery request.
+                </div>
+
+            <?php endif; ?>
+
             <form method="GET" action="assigned_orders.php" class="filter-box">
 
-                <input
-                    type="text"
-                    name="search"
-                    placeholder="Search Order ID / Customer..."
-                    value="<?php echo htmlspecialchars($search); ?>"
-                >
+                <input type="text" name="search" placeholder="Search Order ID / Customer..." value="<?php echo htmlspecialchars($search); ?>">
 
                 <select name="status">
 
@@ -319,9 +389,15 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 
                                         <?php if ($order["delivery_status"] === "Assigned"): ?>
 
-                                            <button type="button" class="action-btn">
-                                                START DELIVERY
-                                            </button>
+                                            <form method="POST" action="assigned_orders.php" class="action-form">
+
+                                                <input type="hidden" name="delivery_id" value="<?php echo (int)$order["delivery_id"]; ?>">
+
+                                                <button type="submit" name="start_delivery" class="action-btn">
+                                                    START DELIVERY
+                                                </button>
+
+                                            </form>
 
                                         <?php elseif ($order["delivery_status"] === "Out for Delivery"): ?>
 
@@ -366,13 +442,9 @@ $order_result = mysqli_stmt_get_result($order_stmt);
                                 <td colspan="6" class="empty-data">
 
                                     <?php if ($search !== "" || $status !== ""): ?>
-
                                         No matching orders found.
-
                                     <?php else: ?>
-
                                         No assigned orders found.
-
                                     <?php endif; ?>
 
                                 </td>
@@ -402,7 +474,6 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 <script>
 
 function updateDateTime() {
-
     const now = new Date();
 
     document.getElementById("currentDate").textContent = now.toLocaleDateString("en-US", {
@@ -419,7 +490,6 @@ function updateDateTime() {
 }
 
 updateDateTime();
-
 setInterval(updateDateTime, 1000);
 
 </script>
