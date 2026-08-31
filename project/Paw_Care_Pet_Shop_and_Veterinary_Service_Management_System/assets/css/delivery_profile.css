@@ -351,3 +351,88 @@ body {
         grid-column: auto;
     }
 }
+.detail-box input,
+.detail-box textarea {
+    width: 100%;
+    padding: 13px;
+    background: #0f1928;
+    border: 1px solid #344157;
+    border-radius: 5px;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    outline: none;
+}
+
+.detail-box input:focus,
+.detail-box textarea:focus {
+    border-color: #f7941d;
+}
+
+.detail-box input:disabled {
+    background: #141e2e;
+    color: #778397;
+    cursor: not-allowed;
+}
+
+.detail-box textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.profile-actions {
+    margin-top: 22px;
+    display: flex;
+    gap: 10px;
+}
+
+.save-btn,
+.cancel-btn {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.save-btn {
+    background: #f7941d;
+    color: #ffffff;
+}
+
+.save-btn:hover {
+    background: #dc7e13;
+}
+
+.cancel-btn {
+    display: flex;
+    align-items: center;
+    background: #2b374b;
+    color: #c6cfdb;
+}
+
+.cancel-btn:hover {
+    background: #37465e;
+}
+
+.success-message,
+.error-message {
+    margin-top: 20px;
+    padding: 12px 15px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.success-message {
+    background: #18392d;
+    border: 1px solid #2f6e54;
+    color: #61d79a;
+}
+
+.error-message {
+    background: #47282b;
+    border: 1px solid #754047;
+    color: #ff8c8c;
+}
