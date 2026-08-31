@@ -97,7 +97,7 @@ $order_result = mysqli_stmt_get_result($order_stmt);
                 Assigned Orders
             </a>
 
-            <a href="#">
+            <a href="history.php">
                 History
             </a>
 
