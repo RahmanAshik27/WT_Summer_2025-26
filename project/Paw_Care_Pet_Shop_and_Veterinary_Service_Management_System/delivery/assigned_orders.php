@@ -10,14 +10,13 @@ if (!isset($_SESSION["user_id"]) || ($_SESSION["role"] ?? "") !== "delivery") {
 
 $user_id = $_SESSION["user_id"];
 
-$sql = "SELECT u.full_name, u.username, da.company_name FROM users u JOIN delivery_agents da ON u.user_id = da.user_id WHERE u.user_id = ? AND da.status = 'Active' LIMIT 1";
+$agent_sql = "SELECT u.full_name, u.username, da.company_name FROM users u JOIN delivery_agents da ON u.user_id = da.user_id WHERE u.user_id = ? AND da.status = 'Active' LIMIT 1";
+$agent_stmt = mysqli_prepare($conn, $agent_sql);
+mysqli_stmt_bind_param($agent_stmt, "i", $user_id);
+mysqli_stmt_execute($agent_stmt);
 
-$stmt = mysqli_prepare($conn, $sql);
-mysqli_stmt_bind_param($stmt, "i", $user_id);
-mysqli_stmt_execute($stmt);
-
-$result = mysqli_stmt_get_result($stmt);
-$agent = mysqli_fetch_assoc($result);
+$agent_result = mysqli_stmt_get_result($agent_stmt);
+$agent = mysqli_fetch_assoc($agent_result);
 
 if (!$agent) {
     header("Location: index.php");
@@ -27,29 +26,7 @@ if (!$agent) {
 $agent_name = $agent["full_name"];
 $company_name = $agent["company_name"];
 
-// Dashboard statistics
-$stats_sql = "SELECT COUNT(*) AS total_assigned, SUM(CASE WHEN d.delivery_status = 'Out for Delivery' THEN 1 ELSE 0 END) AS out_for_delivery, SUM(CASE WHEN d.delivery_status = 'Delivered' AND DATE(d.delivered_at) = CURDATE() THEN 1 ELSE 0 END) AS delivered_today, SUM(CASE WHEN d.delivery_status = 'Delivered' THEN 1 ELSE 0 END) AS total_delivered FROM deliveries d JOIN orders o ON d.order_id = o.order_id WHERE d.delivery_agent_id = ? AND o.delivery_method = ?";
-
-$stats_stmt = mysqli_prepare($conn, $stats_sql);
-mysqli_stmt_bind_param($stats_stmt, "is", $user_id, $company_name);
-mysqli_stmt_execute($stats_stmt);
-
-$stats_result = mysqli_stmt_get_result($stats_stmt);
-$stats = mysqli_fetch_assoc($stats_result);
-
-$total_assigned = (int)($stats["total_assigned"] ?? 0);
-$out_for_delivery = (int)($stats["out_for_delivery"] ?? 0);
-$delivered_today = (int)($stats["delivered_today"] ?? 0);
-$total_delivered = (int)($stats["total_delivered"] ?? 0);
-
-if ($total_assigned > 0) {
-    $success_rate = round(($total_delivered / $total_assigned) * 100);
-} else {
-    $success_rate = 0;
-}
-
-// Recent assigned orders
-$order_sql = "SELECT o.order_id, o.total_amount, o.delivery_address, u.full_name AS customer_name, d.delivery_status FROM deliveries d JOIN orders o ON d.order_id = o.order_id JOIN users u ON o.customer_id = u.user_id WHERE d.delivery_agent_id = ? AND o.delivery_method = ? ORDER BY d.assigned_at DESC LIMIT 5";
+$order_sql = "SELECT d.delivery_id, d.delivery_status, d.assigned_at, d.delivery_note, o.order_id, o.total_amount, o.delivery_address, o.order_status, o.payment_method, o.payment_status, o.order_date, u.full_name AS customer_name, u.phone AS customer_phone FROM deliveries d JOIN orders o ON d.order_id = o.order_id JOIN users u ON o.customer_id = u.user_id WHERE d.delivery_agent_id = ? AND o.delivery_method = ? ORDER BY d.assigned_at DESC";
 
 $order_stmt = mysqli_prepare($conn, $order_sql);
 mysqli_stmt_bind_param($order_stmt, "is", $user_id, $company_name);
@@ -65,13 +42,13 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delivery Dashboard | PawCare</title>
-    <link rel="stylesheet" href="../assets/css/delivery_dashboard.css">
+    <title>Assigned Orders | PawCare</title>
+    <link rel="stylesheet" href="../assets/css/delivery_assigned_orders.css">
 </head>
 
 <body>
 
-<div class="dashboard-layout">
+<div class="delivery-layout">
 
     <aside class="sidebar">
 
@@ -89,11 +66,11 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 
         <nav class="sidebar-menu">
 
-            <a href="dashboard.php" class="active">
+            <a href="dashboard.php">
                 Dashboard
             </a>
 
-            <a href="assigned_orders.php">
+            <a href="assigned_orders.php" class="active">
                 Assigned Orders
             </a>
 
@@ -119,7 +96,7 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 
     <div class="main-area">
 
-        <header class="dashboard-topbar">
+        <header class="topbar">
 
             <div>
 
@@ -136,116 +113,45 @@ $order_result = mysqli_stmt_get_result($order_stmt);
             <div class="topbar-time">
 
                 <span id="currentDate"></span>
-
                 <span id="currentTime"></span>
 
             </div>
 
         </header>
 
-        <main class="dashboard-content">
+        <main class="content">
 
             <div class="page-heading">
 
-                <h1>
-                    DELIVERY AGENT DASHBOARD
-                </h1>
+                <div>
 
-                <p>
-                    Live Data: Connected to PawCare Database
-                </p>
-
-            </div>
-
-            <div class="stats-container">
-
-                <div class="stat-card">
+                    <h1>
+                        Assigned Orders
+                    </h1>
 
                     <p>
-                        TOTAL ASSIGNED
+                        Manage and update your assigned deliveries.
                     </p>
-
-                    <h2>
-                        <?php echo $total_assigned; ?>
-                    </h2>
-
-                    <span>
-                        Total delivery orders
-                    </span>
 
                 </div>
 
-                <div class="stat-card">
-
-                    <p>
-                        OUT FOR DELIVERY
-                    </p>
-
-                    <h2>
-                        <?php echo $out_for_delivery; ?>
-                    </h2>
-
-                    <span>
-                        Currently on the way
-                    </span>
-
-                </div>
-
-                <div class="stat-card">
-
-                    <p>
-                        DELIVERED TODAY
-                    </p>
-
-                    <h2>
-                        <?php echo $delivered_today; ?>
-                    </h2>
-
-                    <span>
-                        Completed today
-                    </span>
-
-                </div>
-
-                <div class="stat-card">
-
-                    <p>
-                        SUCCESS RATE
-                    </p>
-
-                    <h2>
-                        <?php echo $success_rate; ?>%
-                    </h2>
-
-                    <span>
-                        Delivery performance
-                    </span>
-
+                <div class="company-badge">
+                    <?php echo htmlspecialchars($company_name); ?>
                 </div>
 
             </div>
 
-            <section class="recent-orders">
+            <div class="filter-box">
 
-                <div class="section-header">
+                <input type="text" placeholder="Search Order ID / Customer..." disabled>
 
-                    <div>
+                <select disabled>
+                    <option>All Statuses</option>
+                </select>
 
-                        <h2>
-                            Recent Assigned Orders
-                        </h2>
+            </div>
 
-                        <p>
-                            Your latest delivery assignments
-                        </p>
-
-                    </div>
-
-                <a href="assigned_orders.php">
-                    VIEW ALL ORDERS
-                </a>
-
-                </div>
+            <section class="orders-panel">
 
                 <div class="table-wrapper">
 
@@ -254,10 +160,10 @@ $order_result = mysqli_stmt_get_result($order_stmt);
                         <thead>
 
                             <tr>
-                                <th>ORDER ID</th>
+                                <th>ORDER</th>
                                 <th>CUSTOMER</th>
                                 <th>ADDRESS</th>
-                                <th>BILL</th>
+                                <th>AMOUNT</th>
                                 <th>STATUS</th>
                                 <th>ACTION</th>
                             </tr>
@@ -273,11 +179,27 @@ $order_result = mysqli_stmt_get_result($order_stmt);
                                 <tr>
 
                                     <td>
-                                        #<?php echo (int)$order["order_id"]; ?>
+
+                                        <div class="order-id">
+                                            #<?php echo (int)$order["order_id"]; ?>
+                                        </div>
+
+                                        <span class="order-date">
+                                            <?php echo date("d M Y", strtotime($order["order_date"])); ?>
+                                        </span>
+
                                     </td>
 
                                     <td>
-                                        <?php echo htmlspecialchars($order["customer_name"]); ?>
+
+                                        <div class="customer-name">
+                                            <?php echo htmlspecialchars($order["customer_name"]); ?>
+                                        </div>
+
+                                        <span class="customer-phone">
+                                            <?php echo htmlspecialchars($order["customer_phone"] ?? ""); ?>
+                                        </span>
+
                                     </td>
 
                                     <td>
@@ -285,12 +207,36 @@ $order_result = mysqli_stmt_get_result($order_stmt);
                                     </td>
 
                                     <td>
-                                        <?php echo number_format($order["total_amount"], 2); ?> BDT
+
+                                        <div class="amount">
+                                            <?php echo number_format($order["total_amount"], 2); ?> BDT
+                                        </div>
+
+                                        <span class="payment-status">
+                                            <?php echo htmlspecialchars($order["payment_status"]); ?>
+                                        </span>
+
                                     </td>
 
                                     <td>
 
-                                        <span class="delivery-status">
+                                        <?php
+                                        $status_class = "status-default";
+
+                                        if ($order["delivery_status"] === "Assigned") {
+                                            $status_class = "status-assigned";
+                                        } elseif ($order["delivery_status"] === "Out for Delivery") {
+                                            $status_class = "status-out";
+                                        } elseif ($order["delivery_status"] === "Delivered") {
+                                            $status_class = "status-delivered";
+                                        } elseif ($order["delivery_status"] === "Failed") {
+                                            $status_class = "status-failed";
+                                        } elseif ($order["delivery_status"] === "Cancelled") {
+                                            $status_class = "status-cancelled";
+                                        }
+                                        ?>
+
+                                        <span class="status-badge <?php echo $status_class; ?>">
                                             <?php echo htmlspecialchars($order["delivery_status"]); ?>
                                         </span>
 
@@ -314,6 +260,18 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 
                                             <span class="completed-text">
                                                 COMPLETED
+                                            </span>
+
+                                        <?php elseif ($order["delivery_status"] === "Failed"): ?>
+
+                                            <span class="failed-text">
+                                                FAILED
+                                            </span>
+
+                                        <?php elseif ($order["delivery_status"] === "Cancelled"): ?>
+
+                                            <span class="cancelled-text">
+                                                CANCELLED
                                             </span>
 
                                         <?php else: ?>
