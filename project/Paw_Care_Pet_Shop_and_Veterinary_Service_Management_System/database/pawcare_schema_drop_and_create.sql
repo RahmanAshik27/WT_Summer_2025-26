@@ -256,10 +256,10 @@ ALTER TABLE `deliveries`
   MODIFY `delivery_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 ALTER TABLE `medical_records`
-  MODIFY `record_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `record_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 ALTER TABLE `reviews`
   MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT;
@@ -299,3 +299,23 @@ ALTER TABLE `reviews`
   ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE `delivery_agents` (
+  `agent_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `company_name` enum('Pathao Fast','PetPanda Go','Speed Fast','Jhinku BD') NOT NULL,
+  `status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `delivery_agents`
+  ADD PRIMARY KEY (`agent_id`),
+  ADD UNIQUE KEY `user_id` (`user_id`),
+  ADD KEY `company_name` (`company_name`);
+
+  ALTER TABLE `delivery_agents`
+  MODIFY `agent_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  ALTER TABLE `users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  ALTER TABLE `delivery_agents`
+  ADD CONSTRAINT `delivery_agents_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;

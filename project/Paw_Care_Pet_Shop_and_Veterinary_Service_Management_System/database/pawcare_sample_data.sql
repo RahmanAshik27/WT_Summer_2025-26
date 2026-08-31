@@ -9,6 +9,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DELETE FROM `reviews`;
 DELETE FROM `medical_records`;
 DELETE FROM `appointments`;
+DELETE FROM `delivery_agents`;
 DELETE FROM `deliveries`;
 DELETE FROM `carts`;
 DELETE FROM `order_items`;
@@ -162,13 +163,28 @@ INSERT INTO `appointments` (`appointment_id`, `customer_id`, `doctor_id`, `pet_n
 (1, 2, 1, 'Bruno', 'Dog', '2026-08-30', '10:30:00', 'Routine health examination', 'Completed', '2026-08-26 13:41:45'),
 (2, 3, 2, 'Milo', 'Cat', '2026-09-02', '12:00:00', 'Low appetite and weakness', 'Confirmed', '2026-08-26 13:41:45'),
 (3, 8, 3, 'Miki', 'Cat', '2026-08-25', '11:00:00', 'Vaccination and general checkup', 'Completed', '2026-08-24 15:20:00'),
-(4, 2, 4, 'Rocky', 'Dog', '2026-08-27', '13:30:00', 'Diet and skin care consultation', 'Completed', '2026-08-26 09:15:00');
+(4, 2, 4, 'Rocky', 'Dog', '2026-08-27', '13:30:00', 'Diet and skin care consultation', 'Completed', '2026-08-26 09:15:00'),
+(5, 8, 1, 'Leo', 'Cat', '2026-08-31', '11:00:00', 'Fever and reduced appetite for two days', 'Pending', '2026-08-29 18:10:00'),
+(6, 3, 1, 'Max', 'Dog', '2026-09-01', '14:00:00', 'Regular vaccination and health checkup', 'Confirmed', '2026-08-29 18:15:00'),
+(7, 2, 1, 'Luna', 'Cat', '2026-08-28', '12:30:00', 'Eye irritation and frequent scratching', 'Completed', '2026-08-27 10:30:00'),
+(8, 8, 2, 'Tommy', 'Dog', '2026-09-02', '13:00:00', 'Minor injury on front leg', 'Pending', '2026-08-29 18:20:00'),
+(9, 2, 2, 'Simba', 'Cat', '2026-09-05', '15:00:00', 'Dental checkup and bad breath', 'Confirmed', '2026-08-29 18:25:00'),
+(10, 3, 2, 'Coco', 'Rabbit', '2026-08-26', '11:30:00', 'Small wound and general examination', 'Completed', '2026-08-25 16:00:00'),
+(11, 2, 3, 'Charlie', 'Dog', '2026-08-31', '10:00:00', 'Vaccination and routine health check', 'Pending', '2026-08-29 18:30:00'),
+(12, 3, 3, 'Lucy', 'Cat', '2026-09-03', '11:30:00', 'Frequent sneezing and low appetite', 'Confirmed', '2026-08-29 18:35:00'),
+(13, 8, 3, 'Oreo', 'Cat', '2026-08-27', '12:00:00', 'Routine vaccination follow-up', 'Cancelled', '2026-08-26 17:00:00'),
+(14, 3, 4, 'Bella', 'Dog', '2026-09-01', '14:30:00', 'Nutrition consultation and weight management', 'Pending', '2026-08-29 18:40:00'),
+(15, 8, 4, 'Snowy', 'Rabbit', '2026-09-03', '16:00:00', 'Food habit and general health consultation', 'Confirmed', '2026-08-29 18:45:00'),
+(16, 2, 4, 'Buddy', 'Dog', '2026-08-28', '15:00:00', 'Skin allergy and diet consultation', 'Completed', '2026-08-27 12:00:00');
 
 -- medical_records
 INSERT INTO `medical_records` (`record_id`, `appointment_id`, `diagnosis`, `prescription`, `treatment_notes`, `next_visit_date`, `created_at`) VALUES
 (1, 1, 'Healthy', 'No medicine required', 'Maintain proper diet, vaccination schedule and regular exercise.', '2026-09-30', '2026-08-26 13:41:45'),
 (2, 3, 'Routine vaccination completed', 'Vitamin supplement if needed', 'Vaccination completed. Continue regular feeding and care.', '2026-11-25', '2026-08-25 11:30:00'),
-(3, 4, 'Mild skin irritation', 'Pet-safe skin ointment', 'Keep the skin clean and monitor food sensitivity.', '2026-09-10', '2026-08-27 14:00:00');
+(3, 4, 'Mild skin irritation', 'Pet-safe skin ointment', 'Keep the skin clean and monitor food sensitivity.', '2026-09-10', '2026-08-27 14:00:00'),
+(4, 7, 'Mild eye irritation', 'Pet eye drops twice daily for five days', 'Keep the eye area clean and prevent excessive scratching.', '2026-09-07', '2026-08-28 13:15:00'),
+(5, 10, 'Minor skin wound', 'Antiseptic solution and prescribed healing ointment', 'Clean the affected area twice daily and keep the rabbit in a clean environment.', '2026-09-05', '2026-08-26 12:15:00'),
+(6, 16, 'Food-related skin allergy', 'Antihistamine as prescribed and medicated pet shampoo', 'Change current food gradually and monitor skin condition for one week.', '2026-09-11', '2026-08-28 15:45:00');
 
 -- reviews
 INSERT INTO `reviews` (`review_id`, `customer_id`, `item_type`, `item_id`, `rating`, `comment`, `status`, `created_at`) VALUES
@@ -213,3 +229,305 @@ UPDATE users SET profile_image = 'ashik.jpg' WHERE username = 'ashik';
 UPDATE users SET profile_image = 'mustafiz.jpg' WHERE username = 'mustafiz';
 UPDATE users SET profile_image = 'roni.jpg' WHERE username = 'roni';
 UPDATE users SET profile_image = 'Shajia.jpg' WHERE username = 'shajia';
+
+-- Delivery agent demo accounts
+
+UPDATE `users`
+SET
+    `full_name` = 'Nila',
+    `username` = 'nila',
+    `email` = 'nila.delivery@pawcare.com',
+    `gender` = 'Female',
+    `password` = '$2y$12$1WSBfwtlzwmKPEUoAjH7geeR9u.23EChrrsP4A9gaSXpFQl34uBTC',
+    `role` = 'delivery',
+    `profile_image` = 'default.png',
+    `address` = 'Dhaka, Bangladesh',
+    `status` = 'active'
+WHERE `user_id` = 6;
+
+UPDATE `users`
+SET
+    `full_name` = 'Emon',
+    `username` = 'emon',
+    `email` = 'emon.delivery@pawcare.com',
+    `gender` = 'Male',
+    `password` = '$2y$12$1WSBfwtlzwmKPEUoAjH7geeR9u.23EChrrsP4A9gaSXpFQl34uBTC',
+    `role` = 'delivery',
+    `profile_image` = 'default.png',
+    `address` = 'Dhaka, Bangladesh',
+    `status` = 'active'
+WHERE `user_id` = 7;
+
+INSERT INTO `users`
+(`user_id`, `full_name`, `username`, `email`, `phone`, `gender`, `password`, `role`, `profile_image`, `address`, `status`, `created_at`, `updated_at`)
+VALUES
+(11, 'Nayeem Hasan', 'petpanda', 'petpanda.delivery@pawcare.com', '01720000011', 'Male', '$2y$12$1WSBfwtlzwmKPEUoAjH7geeR9u.23EChrrsP4A9gaSXpFQl34uBTC', 'delivery', 'default.png', 'Dhaka, Bangladesh', 'active', '2026-08-29 20:00:00', '2026-08-29 20:00:00'),
+(12, 'Mehedi Hasan', 'speedfast', 'speedfast.delivery@pawcare.com', '01720000012', 'Male', '$2y$12$1WSBfwtlzwmKPEUoAjH7geeR9u.23EChrrsP4A9gaSXpFQl34uBTC', 'delivery', 'default.png', 'Dhaka, Bangladesh', 'active', '2026-08-29 20:00:00', '2026-08-29 20:00:00');
+
+-- Delivery company mapping
+
+INSERT INTO `delivery_agents`
+(`agent_id`, `user_id`, `company_name`, `status`, `created_at`)
+VALUES
+(1, 6, 'Pathao Fast', 'Active', '2026-08-29 20:00:00'),
+(2, 7, 'Jhinku BD', 'Active', '2026-08-29 20:00:00'),
+(3, 11, 'PetPanda Go', 'Active', '2026-08-29 20:00:00'),
+(4, 12, 'Speed Fast', 'Active', '2026-08-29 20:00:00');
+
+ALTER TABLE `users` AUTO_INCREMENT = 13;
+ALTER TABLE `delivery_agents` AUTO_INCREMENT = 5;
+
+START TRANSACTION;
+
+-- Pathao Fast - Nila user_id 6
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (2, 1250.00, 'Mirpur 10, Dhaka', 'Pathao Fast', 'Cash on Delivery', 'Pending', 'Confirmed');
+SET @o1 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o1, 6, 'Assigned', 'Call customer before delivery.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (8, 2850.00, 'Dhanmondi 27, Dhaka', 'Pathao Fast', 'bKash', 'Paid', 'Confirmed');
+SET @o2 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o2, 6, 'Assigned', 'Customer requested afternoon delivery.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (13, 950.00, 'Uttara Sector 7, Dhaka', 'Pathao Fast', 'Cash on Delivery', 'Pending', 'Confirmed');
+SET @o3 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o3, 6, 'Assigned', 'Collect cash from customer.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (3, 3450.00, 'Banani 11, Dhaka', 'Pathao Fast', 'Nagad', 'Paid', 'Shipped');
+SET @o4 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o4, 6, 'Out for Delivery', 'Package is on the way.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (8, 1750.00, 'Bashundhara R/A, Dhaka', 'Pathao Fast', 'Rocket', 'Paid', 'Shipped');
+SET @o5 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o5, 6, 'Out for Delivery', 'Customer has been contacted.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (2, 5200.00, 'Mohammadpur, Dhaka', 'Pathao Fast', 'bKash', 'Paid', 'Delivered');
+SET @o6 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o6, 6, 'Delivered', NOW(), 'Delivered successfully.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (13, 2300.00, 'Mirpur DOHS, Dhaka', 'Pathao Fast', 'Credit Card', 'Paid', 'Delivered');
+SET @o7 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o7, 6, 'Delivered', NOW(), 'Customer received the order.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (3, 4100.00, 'Gulshan 2, Dhaka', 'Pathao Fast', 'bKash', 'Paid', 'Delivered');
+SET @o8 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o8, 6, 'Delivered', DATE_SUB(NOW(), INTERVAL 2 DAY), 'Previous delivery completed.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (8, 1400.00, 'Farmgate, Dhaka', 'Pathao Fast', 'Cash on Delivery', 'Pending', 'Processing');
+SET @o9 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o9, 6, 'Failed', 'Customer was unavailable.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (2, 780.00, 'Shyamoli, Dhaka', 'Pathao Fast', 'Cash on Delivery', 'Pending', 'Cancelled');
+SET @o10 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o10, 6, 'Cancelled', 'Customer cancelled the order.');
+
+
+-- Jhinku BD - Emon user_id 7
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (8, 1350.00, 'Bashundhara, Dhaka', 'Jhinku BD', 'Cash on Delivery', 'Pending', 'Confirmed');
+SET @o11 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o11, 7, 'Assigned', 'Contact customer before delivery.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (13, 2600.00, 'Uttara Sector 10, Dhaka', 'Jhinku BD', 'bKash', 'Paid', 'Confirmed');
+SET @o12 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o12, 7, 'Assigned', 'Handle package carefully.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (2, 850.00, 'Mirpur 2, Dhaka', 'Jhinku BD', 'Cash on Delivery', 'Pending', 'Confirmed');
+SET @o13 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o13, 7, 'Assigned', 'Cash payment expected.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (3, 5600.00, 'Banani, Dhaka', 'Jhinku BD', 'Nagad', 'Paid', 'Shipped');
+SET @o14 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o14, 7, 'Out for Delivery', 'Delivery started.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (8, 1950.00, 'Mohammadpur, Dhaka', 'Jhinku BD', 'Rocket', 'Paid', 'Shipped');
+SET @o15 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o15, 7, 'Out for Delivery', 'Customer requested phone call.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (13, 3200.00, 'Dhanmondi, Dhaka', 'Jhinku BD', 'bKash', 'Paid', 'Delivered');
+SET @o16 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o16, 7, 'Delivered', NOW(), 'Delivered successfully.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (2, 4750.00, 'Kalabagan, Dhaka', 'Jhinku BD', 'Credit Card', 'Paid', 'Delivered');
+SET @o17 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o17, 7, 'Delivered', NOW(), 'Delivery completed successfully.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (3, 2250.00, 'Gulshan 1, Dhaka', 'Jhinku BD', 'Nagad', 'Paid', 'Delivered');
+SET @o18 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o18, 7, 'Delivered', DATE_SUB(NOW(), INTERVAL 1 DAY), 'Previous delivery completed.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (8, 1100.00, 'Rampura, Dhaka', 'Jhinku BD', 'Cash on Delivery', 'Pending', 'Processing');
+SET @o19 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o19, 7, 'Failed', 'Customer phone was unreachable.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (13, 900.00, 'Badda, Dhaka', 'Jhinku BD', 'Cash on Delivery', 'Pending', 'Cancelled');
+SET @o20 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o20, 7, 'Cancelled', 'Delivery cancelled by customer.');
+
+
+-- PetPanda Go - Nayeem Hasan user_id 11
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (2, 1550.00, 'Mirpur 1, Dhaka', 'PetPanda Go', 'Cash on Delivery', 'Pending', 'Confirmed');
+SET @o21 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o21, 11, 'Assigned', 'Confirm customer location.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (3, 2900.00, 'Banani DOHS, Dhaka', 'PetPanda Go', 'bKash', 'Paid', 'Confirmed');
+SET @o22 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o22, 11, 'Assigned', 'Deliver during office hours.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (8, 720.00, 'Bashundhara R/A, Dhaka', 'PetPanda Go', 'Cash on Delivery', 'Pending', 'Confirmed');
+SET @o23 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o23, 11, 'Assigned', 'Collect cash on delivery.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (13, 3700.00, 'Uttara Sector 4, Dhaka', 'PetPanda Go', 'Nagad', 'Paid', 'Shipped');
+SET @o24 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o24, 11, 'Out for Delivery', 'Package is currently on the way.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (2, 1850.00, 'Mirpur 12, Dhaka', 'PetPanda Go', 'Rocket', 'Paid', 'Shipped');
+SET @o25 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o25, 11, 'Out for Delivery', 'Customer has confirmed availability.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (3, 6400.00, 'Gulshan 2, Dhaka', 'PetPanda Go', 'Credit Card', 'Paid', 'Delivered');
+SET @o26 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o26, 11, 'Delivered', NOW(), 'Delivered successfully.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (8, 2450.00, 'Bashundhara, Dhaka', 'PetPanda Go', 'bKash', 'Paid', 'Delivered');
+SET @o27 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o27, 11, 'Delivered', NOW(), 'Customer received package.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (13, 3900.00, 'Uttara, Dhaka', 'PetPanda Go', 'Nagad', 'Paid', 'Delivered');
+SET @o28 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o28, 11, 'Delivered', DATE_SUB(NOW(), INTERVAL 3 DAY), 'Previous delivery completed.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (2, 1300.00, 'Pallabi, Dhaka', 'PetPanda Go', 'Cash on Delivery', 'Pending', 'Processing');
+SET @o29 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o29, 11, 'Failed', 'Customer was not available.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (3, 1050.00, 'Mohakhali, Dhaka', 'PetPanda Go', 'Cash on Delivery', 'Pending', 'Cancelled');
+SET @o30 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o30, 11, 'Cancelled', 'Order cancelled before delivery.');
+
+
+-- Speed Fast - Mehedi Hasan user_id 12
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (13, 1650.00, 'Uttara Sector 9, Dhaka', 'Speed Fast', 'Cash on Delivery', 'Pending', 'Confirmed');
+SET @o31 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o31, 12, 'Assigned', 'Confirm address before delivery.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (8, 3150.00, 'Bashundhara, Dhaka', 'Speed Fast', 'bKash', 'Paid', 'Confirmed');
+SET @o32 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o32, 12, 'Assigned', 'Customer requested fast delivery.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (2, 880.00, 'Mirpur 6, Dhaka', 'Speed Fast', 'Cash on Delivery', 'Pending', 'Confirmed');
+SET @o33 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o33, 12, 'Assigned', 'Cash payment expected.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (3, 4300.00, 'Banani, Dhaka', 'Speed Fast', 'Nagad', 'Paid', 'Shipped');
+SET @o34 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o34, 12, 'Out for Delivery', 'Priority delivery started.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (13, 2050.00, 'Uttara Sector 11, Dhaka', 'Speed Fast', 'Rocket', 'Paid', 'Shipped');
+SET @o35 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o35, 12, 'Out for Delivery', 'Call customer on arrival.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (8, 5900.00, 'Bashundhara R/A, Dhaka', 'Speed Fast', 'Credit Card', 'Paid', 'Delivered');
+SET @o36 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o36, 12, 'Delivered', NOW(), 'Delivered successfully.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (2, 2650.00, 'Mirpur DOHS, Dhaka', 'Speed Fast', 'bKash', 'Paid', 'Delivered');
+SET @o37 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o37, 12, 'Delivered', NOW(), 'Customer received the order.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (3, 3500.00, 'Gulshan, Dhaka', 'Speed Fast', 'Nagad', 'Paid', 'Delivered');
+SET @o38 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivered_at, delivery_note)
+VALUES (@o38, 12, 'Delivered', DATE_SUB(NOW(), INTERVAL 2 DAY), 'Previous delivery completed.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (13, 1450.00, 'Airport Road, Dhaka', 'Speed Fast', 'Cash on Delivery', 'Pending', 'Processing');
+SET @o39 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o39, 12, 'Failed', 'Delivery attempt failed.');
+
+INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
+VALUES (8, 1150.00, 'Rampura, Dhaka', 'Speed Fast', 'Cash on Delivery', 'Pending', 'Cancelled');
+SET @o40 = LAST_INSERT_ID();
+INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
+VALUES (@o40, 12, 'Cancelled', 'Customer cancelled delivery.');
+
+COMMIT;
