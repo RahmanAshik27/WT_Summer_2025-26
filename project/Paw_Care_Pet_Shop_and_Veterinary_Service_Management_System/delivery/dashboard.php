@@ -101,7 +101,7 @@ $order_result = mysqli_stmt_get_result($order_stmt);
                 History
             </a>
 
-            <a href="#">
+            <a href="profile.php">
                 Profile Settings
             </a>
 

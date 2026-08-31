@@ -70,7 +70,9 @@ $history_result = mysqli_stmt_get_result($history_stmt);
 
             <a href="history.php" class="active">History</a>
 
-            <a href="#">Profile Settings</a>
+            <a href="profile.php">
+                Profile Settings
+            </a>
 
         </nav>
 
