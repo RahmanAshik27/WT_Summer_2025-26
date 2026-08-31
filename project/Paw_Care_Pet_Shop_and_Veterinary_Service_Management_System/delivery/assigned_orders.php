@@ -26,6 +26,7 @@ if (!$agent) {
 $agent_name = $agent["full_name"];
 $company_name = $agent["company_name"];
 
+// Start delivery
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["start_delivery"])) {
 
     $delivery_id = (int)($_POST["delivery_id"] ?? 0);
@@ -83,6 +84,64 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["start_delivery"])) {
     exit;
 }
 
+// Mark delivery as delivered
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["mark_delivered"])) {
+
+    $delivery_id = (int)($_POST["delivery_id"] ?? 0);
+
+    if ($delivery_id > 0) {
+
+        $check_sql = "SELECT d.delivery_id, d.order_id FROM deliveries d JOIN orders o ON d.order_id = o.order_id WHERE d.delivery_id = ? AND d.delivery_agent_id = ? AND o.delivery_method = ? AND d.delivery_status = 'Out for Delivery' LIMIT 1";
+        $check_stmt = mysqli_prepare($conn, $check_sql);
+        mysqli_stmt_bind_param($check_stmt, "iis", $delivery_id, $user_id, $company_name);
+        mysqli_stmt_execute($check_stmt);
+
+        $check_result = mysqli_stmt_get_result($check_stmt);
+        $delivery = mysqli_fetch_assoc($check_result);
+
+        if ($delivery) {
+
+            $order_id = $delivery["order_id"];
+
+            mysqli_begin_transaction($conn);
+
+            try {
+
+                $delivery_sql = "UPDATE deliveries SET delivery_status = 'Delivered', delivered_at = NOW() WHERE delivery_id = ? AND delivery_agent_id = ?";
+                $delivery_stmt = mysqli_prepare($conn, $delivery_sql);
+                mysqli_stmt_bind_param($delivery_stmt, "ii", $delivery_id, $user_id);
+
+                if (!mysqli_stmt_execute($delivery_stmt)) {
+                    throw new Exception("Delivery update failed.");
+                }
+
+                $order_update_sql = "UPDATE orders SET order_status = 'Delivered' WHERE order_id = ? AND delivery_method = ?";
+                $order_update_stmt = mysqli_prepare($conn, $order_update_sql);
+                mysqli_stmt_bind_param($order_update_stmt, "is", $order_id, $company_name);
+
+                if (!mysqli_stmt_execute($order_update_stmt)) {
+                    throw new Exception("Order update failed.");
+                }
+
+                mysqli_commit($conn);
+
+                header("Location: assigned_orders.php?message=delivered");
+                exit;
+
+            } catch (Exception $e) {
+
+                mysqli_rollback($conn);
+
+                header("Location: assigned_orders.php?message=error");
+                exit;
+            }
+        }
+    }
+
+    header("Location: assigned_orders.php?message=invalid");
+    exit;
+}
+
 $message = $_GET["message"] ?? "";
 
 $search = trim($_GET["search"] ?? "");
@@ -100,7 +159,7 @@ if ($status !== "" && !in_array($status, $allowed_status)) {
     $status = "";
 }
 
-$order_sql = "SELECT d.delivery_id, d.delivery_status, d.assigned_at, d.delivery_note, o.order_id, o.total_amount, o.delivery_address, o.order_status, o.payment_method, o.payment_status, o.order_date, u.full_name AS customer_name, u.phone AS customer_phone FROM deliveries d JOIN orders o ON d.order_id = o.order_id JOIN users u ON o.customer_id = u.user_id WHERE d.delivery_agent_id = ? AND o.delivery_method = ?";
+$order_sql = "SELECT d.delivery_id, d.delivery_status, d.assigned_at, d.delivered_at, d.delivery_note, o.order_id, o.total_amount, o.delivery_address, o.order_status, o.payment_method, o.payment_status, o.order_date, u.full_name AS customer_name, u.phone AS customer_phone FROM deliveries d JOIN orders o ON d.order_id = o.order_id JOIN users u ON o.customer_id = u.user_id WHERE d.delivery_agent_id = ? AND o.delivery_method = ?";
 
 $params = [$user_id, $company_name];
 $types = "is";
@@ -197,9 +256,7 @@ $order_result = mysqli_stmt_get_result($order_stmt);
                     WELCOME BACK, <?php echo strtoupper(htmlspecialchars($agent_name)); ?>!
                 </h3>
 
-                <p>
-                    Ready for today's deliveries?
-                </p>
+                <p>Ready for today's deliveries?</p>
 
             </div>
 
@@ -238,6 +295,12 @@ $order_result = mysqli_stmt_get_result($order_stmt);
                     Delivery started successfully.
                 </div>
 
+            <?php elseif ($message === "delivered"): ?>
+
+                <div class="success-message">
+                    Order delivered successfully.
+                </div>
+
             <?php elseif ($message === "error"): ?>
 
                 <div class="error-message">
@@ -258,9 +321,7 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 
                 <select name="status">
 
-                    <option value="">
-                        All Statuses
-                    </option>
+                    <option value="">All Statuses</option>
 
                     <option value="Assigned" <?php if ($status === "Assigned") echo "selected"; ?>>
                         Assigned
@@ -401,9 +462,15 @@ $order_result = mysqli_stmt_get_result($order_stmt);
 
                                         <?php elseif ($order["delivery_status"] === "Out for Delivery"): ?>
 
-                                            <button type="button" class="action-btn">
-                                                MARK DELIVERED
-                                            </button>
+                                            <form method="POST" action="assigned_orders.php" class="action-form">
+
+                                                <input type="hidden" name="delivery_id" value="<?php echo (int)$order["delivery_id"]; ?>">
+
+                                                <button type="submit" name="mark_delivered" class="action-btn">
+                                                    MARK DELIVERED
+                                                </button>
+
+                                            </form>
 
                                         <?php elseif ($order["delivery_status"] === "Delivered"): ?>
 
