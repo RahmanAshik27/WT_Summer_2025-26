@@ -250,8 +250,19 @@ while ($best_item = mysqli_fetch_assoc($best_seller_result)) {
                         data-name="<?php echo strtolower(htmlspecialchars($pet["pet_name"])); ?>"
                         data-extra="<?php echo strtolower(htmlspecialchars($pet["breed"])); ?>">
 
+                        <?php
+                        $pet_image = strtolower($pet["pet_name"]);
+                        $pet_image = str_replace(" ", "_", $pet_image);
+                        $pet_image = $pet_image . ".jpeg";
+                        $pet_image_path = "../uploads/pets/" . $pet_image;
+                        ?>
+
                         <div class="item-image">
-                            <img src="../uploads/pets/<?php echo htmlspecialchars($pet["image"]); ?>" alt="<?php echo htmlspecialchars($pet["pet_name"]); ?>">
+                            <?php if (file_exists($pet_image_path)): ?>
+                                <img src="<?php echo htmlspecialchars($pet_image_path); ?>" alt="<?php echo htmlspecialchars($pet["pet_name"]); ?>">
+                            <?php else: ?>
+                                <div class="image-coming-soon">Image will be updated soon</div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="item-info">
@@ -288,8 +299,19 @@ while ($best_item = mysqli_fetch_assoc($best_seller_result)) {
                         data-name="<?php echo strtolower(htmlspecialchars($product["product_name"])); ?>"
                         data-extra="<?php echo strtolower(htmlspecialchars($product["brand"] ?? "")); ?>">
 
+                        <?php
+                        $product_image = strtolower($product["product_name"]);
+                        $product_image = str_replace(" ", "_", $product_image);
+                        $product_image = $product_image . ".jpeg";
+                        $product_image_path = "../uploads/products/" . $product_image;
+                        ?>
+
                         <div class="item-image">
-                            <img src="../uploads/products/<?php echo htmlspecialchars($product["image"]); ?>" alt="<?php echo htmlspecialchars($product["product_name"]); ?>">
+                            <?php if (file_exists($product_image_path)): ?>
+                                <img src="<?php echo htmlspecialchars($product_image_path); ?>" alt="<?php echo htmlspecialchars($product["product_name"]); ?>">
+                            <?php else: ?>
+                                <div class="image-coming-soon">Image will be updated soon</div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="item-info">
