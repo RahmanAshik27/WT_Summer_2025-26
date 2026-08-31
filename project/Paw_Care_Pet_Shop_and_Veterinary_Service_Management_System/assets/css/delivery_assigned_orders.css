@@ -395,3 +395,18 @@ td {
     border: 1px solid #754047;
     color: #ff8c8c;
 }
+.details-btn {
+    display: inline-block;
+    margin-bottom: 7px;
+    padding: 7px 10px;
+    background: #26364e;
+    color: #f7941d;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 9px;
+    font-weight: bold;
+}
+
+.details-btn:hover {
+    background: #34465f;
+}
