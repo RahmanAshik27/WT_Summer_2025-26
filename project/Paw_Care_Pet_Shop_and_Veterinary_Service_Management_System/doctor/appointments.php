@@ -3,127 +3,72 @@
 require_once "../includes/session.php";
 require_once "../config/database.php";
 
-if (!isset($_SESSION["user_id"]) || ($_SESSION["role"] ?? "") !== "doctor") {
-    header("Location: login.php");
+if (!isset($_SESSION["user_id"]) || ($_SESSION["role"] ?? "") !== "delivery") {
+    header("Location: index.php");
     exit;
 }
 
-$user_id = (int)$_SESSION["user_id"];
-$success_message = "";
-$error_message = "";
+$user_id = $_SESSION["user_id"];
 
-// Get logged-in doctor
-$stmt = mysqli_prepare($conn, "SELECT d.doctor_id, d.specialization, u.full_name, u.profile_image FROM doctors d JOIN users u ON d.user_id = u.user_id WHERE d.user_id = ? LIMIT 1");
+$agent_sql = "SELECT u.full_name, u.username, da.company_name FROM users u JOIN delivery_agents da ON u.user_id = da.user_id WHERE u.user_id = ? AND da.status = 'Active' LIMIT 1";
+$agent_stmt = mysqli_prepare($conn, $agent_sql);
+mysqli_stmt_bind_param($agent_stmt, "i", $user_id);
+mysqli_stmt_execute($agent_stmt);
 
-if (!$stmt) {
-    die("Failed to prepare doctor query: " . mysqli_error($conn));
-}
+$agent_result = mysqli_stmt_get_result($agent_stmt);
+$agent = mysqli_fetch_assoc($agent_result);
 
-mysqli_stmt_bind_param($stmt, "i", $user_id);
-mysqli_stmt_execute($stmt);
-
-$result = mysqli_stmt_get_result($stmt);
-
-if (!$result || mysqli_num_rows($result) !== 1) {
-    mysqli_stmt_close($stmt);
-    header("Location: login.php");
+if (!$agent) {
+    header("Location: index.php");
     exit;
 }
 
-$doctor = mysqli_fetch_assoc($result);
-mysqli_stmt_close($stmt);
+$agent_name = $agent["full_name"];
+$company_name = $agent["company_name"];
 
-$doctor_id = (int)$doctor["doctor_id"];
+$search = trim($_GET["search"] ?? "");
+$status = trim($_GET["status"] ?? "");
 
+$allowed_status = [
+    "Assigned",
+    "Out for Delivery",
+    "Delivered",
+    "Failed",
+    "Cancelled"
+];
 
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    $appointment_id = (int)($_POST["appointment_id"] ?? 0);
-    $new_status = trim($_POST["status"] ?? "");
-
-    $allowed_status = ["Confirmed", "Completed", "Cancelled"];
-
-    if ($appointment_id <= 0 || !in_array($new_status, $allowed_status, true)) {
-        $error_message = "Invalid appointment update.";
-    } else {
-
-        $stmt = mysqli_prepare($conn, "SELECT appointment_id, status FROM appointments WHERE appointment_id = ? AND doctor_id = ? LIMIT 1");
-        mysqli_stmt_bind_param($stmt, "ii", $appointment_id, $doctor_id);
-        mysqli_stmt_execute($stmt);
-
-        $result = mysqli_stmt_get_result($stmt);
-        $appointment = mysqli_fetch_assoc($result);
-
-        mysqli_stmt_close($stmt);
-
-        if (!$appointment) {
-            $error_message = "Appointment not found.";
-        } elseif ($appointment["status"] === "Completed" || $appointment["status"] === "Cancelled") {
-            $error_message = "This appointment cannot be changed anymore.";
-        } else {
-
-            $stmt = mysqli_prepare($conn, "UPDATE appointments SET status = ? WHERE appointment_id = ? AND doctor_id = ?");
-            mysqli_stmt_bind_param($stmt, "sii", $new_status, $appointment_id, $doctor_id);
-
-            if (mysqli_stmt_execute($stmt)) {
-                $success_message = "Appointment status updated successfully.";
-            } else {
-                $error_message = "Failed to update appointment.";
-            }
-
-            mysqli_stmt_close($stmt);
-        }
-    }
+if ($status !== "" && !in_array($status, $allowed_status)) {
+    $status = "";
 }
 
+$order_sql = "SELECT d.delivery_id, d.delivery_status, d.assigned_at, d.delivery_note, o.order_id, o.total_amount, o.delivery_address, o.order_status, o.payment_method, o.payment_status, o.order_date, u.full_name AS customer_name, u.phone AS customer_phone FROM deliveries d JOIN orders o ON d.order_id = o.order_id JOIN users u ON o.customer_id = u.user_id WHERE d.delivery_agent_id = ? AND o.delivery_method = ?";
 
-$filter = $_GET["filter"] ?? "all";
-$allowed_filters = ["all", "pending", "confirmed", "completed", "cancelled"];
+$params = [$user_id, $company_name];
+$types = "is";
 
-if (!in_array($filter, $allowed_filters, true)) {
-    $filter = "all";
+if ($search !== "") {
+    $order_sql .= " AND (CAST(o.order_id AS CHAR) LIKE ? OR u.full_name LIKE ?)";
+    $search_value = "%" . ltrim($search, "#") . "%";
+    $customer_search = "%" . $search . "%";
+
+    $params[] = $search_value;
+    $params[] = $customer_search;
+    $types .= "ss";
 }
 
-
-$sql = "SELECT a.appointment_id, a.pet_name, a.pet_type, a.appointment_date, a.appointment_time, a.reason, a.status, a.created_at, u.full_name AS customer_name, u.phone AS customer_phone
-        FROM appointments a
-        JOIN users u ON a.customer_id = u.user_id
-        WHERE a.doctor_id = ?";
-
-$status_filter = "";
-
-if ($filter !== "all") {
-    $status_filter = ucfirst($filter);
-    $sql .= " AND a.status = ?";
+if ($status !== "") {
+    $order_sql .= " AND d.delivery_status = ?";
+    $params[] = $status;
+    $types .= "s";
 }
 
-$sql .= " ORDER BY a.appointment_date DESC, a.appointment_time DESC";
+$order_sql .= " ORDER BY d.assigned_at DESC";
 
-$stmt = mysqli_prepare($conn, $sql);
+$order_stmt = mysqli_prepare($conn, $order_sql);
+mysqli_stmt_bind_param($order_stmt, $types, ...$params);
+mysqli_stmt_execute($order_stmt);
 
-if ($filter === "all") {
-    mysqli_stmt_bind_param($stmt, "i", $doctor_id);
-} else {
-    mysqli_stmt_bind_param($stmt, "is", $doctor_id, $status_filter);
-}
-
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-
-$appointments = [];
-
-while ($row = mysqli_fetch_assoc($result)) {
-    $appointments[] = $row;
-}
-
-mysqli_stmt_close($stmt);
-
-$profile_image = trim($doctor["profile_image"] ?? "");
-
-if (empty($profile_image)) {
-    $profile_image = "default.png";
-}
+$order_result = mysqli_stmt_get_result($order_stmt);
 
 ?>
 
@@ -133,259 +78,351 @@ if (empty($profile_image)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Appointments | PawCare Doctor</title>
-
-    <link rel="stylesheet" href="../assets/css/doctor-appointments.css">
+    <title>Assigned Orders | PawCare</title>
+    <link rel="stylesheet" href="../assets/css/delivery_assigned_orders.css">
 </head>
 
-<body class="doctor-appointments-page">
+<body>
 
-<header class="top-bar">
+<div class="delivery-layout">
 
-    <div class="top-brand">
-        <span>🐾</span>
-        <span>PawCare – Doctor Portal</span>
-    </div>
+    <aside class="sidebar">
 
-    <div class="window-dots">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
+        <div class="sidebar-brand">
 
-</header>
+            <img src="../assets/images/petLogo.jpeg" alt="PawCare Logo">
 
-<aside class="doctor-sidebar">
+            <h2>PAWCARE</h2>
 
-    <div class="doctor-profile">
+            <p>
+                <?php echo htmlspecialchars($company_name); ?>
+            </p>
 
-        <img src="../uploads/profiles/<?php echo htmlspecialchars($profile_image); ?>"
-             onerror="this.onerror=null; this.src='../uploads/profiles/default.png';"
-             alt="<?php echo htmlspecialchars($doctor["full_name"]); ?>">
-
-        <h2><?php echo htmlspecialchars($doctor["full_name"]); ?></h2>
-
-        <p><?php echo htmlspecialchars($doctor["specialization"]); ?></p>
-
-    </div>
-<nav class="sidebar-menu">
-    <a href="dashboard.php">Dashboard</a>
-    <a href="appointments.php" class="active">Appointments</a>
-    <a href="medical_records.php">Medical Records</a>
-    <a href="../logout.php">Logout</a>
-</nav>
-
-</aside>
-
-<main class="appointments-content">
-
-    <div class="page-heading">
-
-        <div>
-            <p>Doctor Portal</p>
-            <h1>Appointment Management</h1>
-            <span>View and manage your patient appointments.</span>
         </div>
 
-        <div class="appointment-count">
-            <?php echo count($appointments); ?> Appointments
+        <nav class="sidebar-menu">
+
+            <a href="dashboard.php">
+                Dashboard
+            </a>
+
+            <a href="assigned_orders.php" class="active">
+                Assigned Orders
+            </a>
+
+            <a href="#">
+                History
+            </a>
+
+            <a href="#">
+                Profile Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-logout">
+
+            <a href="../logout.php">
+                Logout
+            </a>
+
         </div>
 
-    </div>
+    </aside>
 
-    <?php if (!empty($success_message)): ?>
-        <div class="message success-message">
-            <?php echo htmlspecialchars($success_message); ?>
-        </div>
-    <?php endif; ?>
+    <div class="main-area">
 
-    <?php if (!empty($error_message)): ?>
-        <div class="message error-message">
-            <?php echo htmlspecialchars($error_message); ?>
-        </div>
-    <?php endif; ?>
+        <header class="topbar">
 
-    <div class="filter-menu">
+            <div>
 
-        <a href="appointments.php?filter=all"
-           class="<?php echo $filter === "all" ? "active" : ""; ?>">
-            All
-        </a>
-
-        <a href="appointments.php?filter=pending"
-           class="<?php echo $filter === "pending" ? "active" : ""; ?>">
-            Pending
-        </a>
-
-        <a href="appointments.php?filter=confirmed"
-           class="<?php echo $filter === "confirmed" ? "active" : ""; ?>">
-            Confirmed
-        </a>
-
-        <a href="appointments.php?filter=completed"
-           class="<?php echo $filter === "completed" ? "active" : ""; ?>">
-            Completed
-        </a>
-
-        <a href="appointments.php?filter=cancelled"
-           class="<?php echo $filter === "cancelled" ? "active" : ""; ?>">
-            Cancelled
-        </a>
-
-    </div>
-
-    <section class="appointments-card">
-
-        <?php if (!empty($appointments)): ?>
-
-            <div class="table-wrapper">
-
-                <table class="appointments-table">
-
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Guardian</th>
-                        <th>Pet</th>
-                        <th>Schedule</th>
-                        <th>Reason</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-
-                    <?php foreach ($appointments as $appointment): ?>
-
-                        <tr>
-
-                            <td>
-                                #<?php echo str_pad($appointment["appointment_id"], 4, "0", STR_PAD_LEFT); ?>
-                            </td>
-
-                            <td>
-                                <strong><?php echo htmlspecialchars($appointment["customer_name"]); ?></strong>
-                                <span><?php echo htmlspecialchars($appointment["customer_phone"]); ?></span>
-                            </td>
-
-                            <td>
-                                <strong><?php echo htmlspecialchars($appointment["pet_name"]); ?></strong>
-                                <span><?php echo htmlspecialchars($appointment["pet_type"]); ?></span>
-                            </td>
-
-                            <td>
-                                <strong>
-                                    <?php echo date("d M Y", strtotime($appointment["appointment_date"])); ?>
-                                </strong>
-
-                                <span>
-                                    <?php echo date("h:i A", strtotime($appointment["appointment_time"])); ?>
-                                </span>
-                            </td>
-
-                            <td class="reason-cell">
-                                <?php echo htmlspecialchars($appointment["reason"]); ?>
-                            </td>
-
-                            <td>
-                                <span class="status status-<?php echo strtolower($appointment["status"]); ?>">
-                                    <?php echo htmlspecialchars($appointment["status"]); ?>
-                                </span>
-                            </td>
-
-                            <td>
-
-                                <?php if ($appointment["status"] === "Pending"): ?>
-
-                                    <div class="action-buttons">
-
-                                        <form method="POST">
-                                            <input type="hidden" name="appointment_id" value="<?php echo $appointment["appointment_id"]; ?>">
-                                            <input type="hidden" name="status" value="Confirmed">
-
-                                            <button type="submit" class="confirm-btn">
-                                                Confirm
-                                            </button>
-                                        </form>
-
-                                        <form method="POST">
-                                            <input type="hidden" name="appointment_id" value="<?php echo $appointment["appointment_id"]; ?>">
-                                            <input type="hidden" name="status" value="Cancelled">
-
-                                            <button type="submit" class="cancel-btn">
-                                                Cancel
-                                            </button>
-                                        </form>
-
-                                    </div>
-
-                                <?php elseif ($appointment["status"] === "Confirmed"): ?>
-
-                                    <div class="action-buttons">
-
-                                        <form method="POST">
-                                            <input type="hidden" name="appointment_id" value="<?php echo $appointment["appointment_id"]; ?>">
-                                            <input type="hidden" name="status" value="Completed">
-
-                                            <button type="submit" class="complete-btn">
-                                                Complete
-                                            </button>
-                                        </form>
-
-                                        <form method="POST">
-                                            <input type="hidden" name="appointment_id" value="<?php echo $appointment["appointment_id"]; ?>">
-                                            <input type="hidden" name="status" value="Cancelled">
-
-                                            <button type="submit" class="cancel-btn">
-                                                Cancel
-                                            </button>
-                                        </form>
-
-                                    </div>
-
-                                <?php else: ?>
-
-                                    <span class="no-action">
-                                        No Action
-                                    </span>
-
-                                <?php endif; ?>
-
-                            </td>
-
-                        </tr>
-
-                    <?php endforeach; ?>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        <?php else: ?>
-
-            <div class="empty-appointments">
-
-                <h3>No appointments found</h3>
+                <h3>
+                    WELCOME BACK, <?php echo strtoupper(htmlspecialchars($agent_name)); ?>!
+                </h3>
 
                 <p>
-                    There are no appointments available under this category.
+                    Ready for today's deliveries?
                 </p>
 
             </div>
 
-        <?php endif; ?>
+            <div class="topbar-time">
 
-    </section>
+                <span id="currentDate"></span>
+                <span id="currentTime"></span>
 
-</main>
+            </div>
 
-<footer class="doctor-footer">
-    🐾 PawCare Doctor Portal © 2026
+        </header>
+
+        <main class="content">
+
+            <div class="page-heading">
+
+                <div>
+
+                    <h1>
+                        Assigned Orders
+                    </h1>
+
+                    <p>
+                        Manage and update your assigned deliveries.
+                    </p>
+
+                </div>
+
+                <div class="company-badge">
+                    <?php echo htmlspecialchars($company_name); ?>
+                </div>
+
+            </div>
+
+            <form method="GET" action="assigned_orders.php" class="filter-box">
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search Order ID / Customer..."
+                    value="<?php echo htmlspecialchars($search); ?>"
+                >
+
+                <select name="status">
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    <option value="Assigned" <?php if ($status === "Assigned") echo "selected"; ?>>
+                        Assigned
+                    </option>
+
+                    <option value="Out for Delivery" <?php if ($status === "Out for Delivery") echo "selected"; ?>>
+                        Out for Delivery
+                    </option>
+
+                    <option value="Delivered" <?php if ($status === "Delivered") echo "selected"; ?>>
+                        Delivered
+                    </option>
+
+                    <option value="Failed" <?php if ($status === "Failed") echo "selected"; ?>>
+                        Failed
+                    </option>
+
+                    <option value="Cancelled" <?php if ($status === "Cancelled") echo "selected"; ?>>
+                        Cancelled
+                    </option>
+
+                </select>
+
+                <button type="submit" class="filter-btn">
+                    SEARCH
+                </button>
+
+                <a href="assigned_orders.php" class="reset-btn">
+                    RESET
+                </a>
+
+            </form>
+
+            <section class="orders-panel">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>ORDER</th>
+                                <th>CUSTOMER</th>
+                                <th>ADDRESS</th>
+                                <th>AMOUNT</th>
+                                <th>STATUS</th>
+                                <th>ACTION</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <?php if (mysqli_num_rows($order_result) > 0): ?>
+
+                            <?php while ($order = mysqli_fetch_assoc($order_result)): ?>
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="order-id">
+                                            #<?php echo (int)$order["order_id"]; ?>
+                                        </div>
+
+                                        <span class="order-date">
+                                            <?php echo date("d M Y", strtotime($order["order_date"])); ?>
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <div class="customer-name">
+                                            <?php echo htmlspecialchars($order["customer_name"]); ?>
+                                        </div>
+
+                                        <span class="customer-phone">
+                                            <?php echo htmlspecialchars($order["customer_phone"] ?? ""); ?>
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+                                        <?php echo htmlspecialchars($order["delivery_address"]); ?>
+                                    </td>
+
+                                    <td>
+
+                                        <div class="amount">
+                                            <?php echo number_format($order["total_amount"], 2); ?> BDT
+                                        </div>
+
+                                        <span class="payment-status">
+                                            <?php echo htmlspecialchars($order["payment_status"]); ?>
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <?php
+                                        $status_class = "status-default";
+
+                                        if ($order["delivery_status"] === "Assigned") {
+                                            $status_class = "status-assigned";
+                                        } elseif ($order["delivery_status"] === "Out for Delivery") {
+                                            $status_class = "status-out";
+                                        } elseif ($order["delivery_status"] === "Delivered") {
+                                            $status_class = "status-delivered";
+                                        } elseif ($order["delivery_status"] === "Failed") {
+                                            $status_class = "status-failed";
+                                        } elseif ($order["delivery_status"] === "Cancelled") {
+                                            $status_class = "status-cancelled";
+                                        }
+                                        ?>
+
+                                        <span class="status-badge <?php echo $status_class; ?>">
+                                            <?php echo htmlspecialchars($order["delivery_status"]); ?>
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <?php if ($order["delivery_status"] === "Assigned"): ?>
+
+                                            <button type="button" class="action-btn">
+                                                START DELIVERY
+                                            </button>
+
+                                        <?php elseif ($order["delivery_status"] === "Out for Delivery"): ?>
+
+                                            <button type="button" class="action-btn">
+                                                MARK DELIVERED
+                                            </button>
+
+                                        <?php elseif ($order["delivery_status"] === "Delivered"): ?>
+
+                                            <span class="completed-text">
+                                                COMPLETED
+                                            </span>
+
+                                        <?php elseif ($order["delivery_status"] === "Failed"): ?>
+
+                                            <span class="failed-text">
+                                                FAILED
+                                            </span>
+
+                                        <?php elseif ($order["delivery_status"] === "Cancelled"): ?>
+
+                                            <span class="cancelled-text">
+                                                CANCELLED
+                                            </span>
+
+                                        <?php else: ?>
+
+                                            <span>-</span>
+
+                                        <?php endif; ?>
+
+                                    </td>
+
+                                </tr>
+
+                            <?php endwhile; ?>
+
+                        <?php else: ?>
+
+                            <tr>
+
+                                <td colspan="6" class="empty-data">
+
+                                    <?php if ($search !== "" || $status !== ""): ?>
+
+                                        No matching orders found.
+
+                                    <?php else: ?>
+
+                                        No assigned orders found.
+
+                                    <?php endif; ?>
+
+                                </td>
+
+                            </tr>
+
+                        <?php endif; ?>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<footer class="delivery-footer">
+    POWERFUL PET MANAGEMENT ENGINE V2.0 LIVE | SYSTEM SECURED
 </footer>
+
+<script>
+
+function updateDateTime() {
+
+    const now = new Date();
+
+    document.getElementById("currentDate").textContent = now.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+    });
+
+    document.getElementById("currentTime").textContent = now.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+updateDateTime();
+
+setInterval(updateDateTime, 1000);
+
+</script>
 
 </body>
 

@@ -86,9 +86,7 @@ if ($result) {
                 Customer Portal
             </a>
 
-            <a href="#" class="menu-btn">
-                Pet Reviews
-            </a>
+            <a href="pet_reviews.php" class="menu-btn">Pet Reviews</a>
 
             <a href="specialist_doctors.php" class="menu-btn active">
                 Specialist Doctors
