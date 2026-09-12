@@ -468,6 +468,10 @@ INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_n
 VALUES (@o30, 11, 'Cancelled', 'Order cancelled before delivery.');
 
 
+UPDATE users
+SET password = '$2y$12$B0cngYNbNHX7AEiOuykkFubzDW9SU8PPw6MybeL2tvKVioikdjO5O'
+WHERE role = 'doctor';
+
 -- Speed Fast - Mehedi Hasan user_id 12
 
 INSERT INTO orders (customer_id, total_amount, delivery_address, delivery_method, payment_method, payment_status, order_status)
@@ -529,5 +533,6 @@ VALUES (8, 1150.00, 'Rampura, Dhaka', 'Speed Fast', 'Cash on Delivery', 'Pending
 SET @o40 = LAST_INSERT_ID();
 INSERT INTO deliveries (order_id, delivery_agent_id, delivery_status, delivery_note)
 VALUES (@o40, 12, 'Cancelled', 'Customer cancelled delivery.');
+
 
 COMMIT;
